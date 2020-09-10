@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Model
 {
-    enum SectionTypes
+    public enum SectionTypes
     {
         Straight,
         LeftCorner,

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Model
 {
-    class Driver : IParticipant
+    public class Driver : IParticipant
     {
         // TODO Fully implement interface
         // TODO Make Constructor

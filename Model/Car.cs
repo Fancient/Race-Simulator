@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Model
 {
-    class Car : IEquipment
+    public class Car : IEquipment
     {
         // TODO: Implement interface
         // TODO: Make Constructor
