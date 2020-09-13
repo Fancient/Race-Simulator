@@ -10,6 +10,11 @@ namespace Model
         public Queue<Track> Tracks { get; set; }
 
         // TODO: Constructor?
+        public Competition()
+        {
+            Participants = new List<IParticipant>();
+            Tracks = new Queue<Track>();
+        }
 
         public Track NextTrack()
         {
