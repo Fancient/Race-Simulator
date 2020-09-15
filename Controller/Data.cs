@@ -9,6 +9,8 @@ namespace Controller
     {
         public static Competition CompetitionData { get; set; }
 
+        public static Race CurrentRace { get; set; }
+
         public static void Initialize()
         {
             CompetitionData = new Competition();
@@ -106,6 +108,12 @@ namespace Controller
                 SectionTypes.Straight,
                 SectionTypes.RightCorner
             })); ;
+        }
+
+        public static void NextRace()
+        {
+            Track currentTrack = CompetitionData.NextTrack();
+            if (currentTrack != null) CurrentRace = new Race(currentTrack, CompetitionData.Participants);
         }
     }
 }
