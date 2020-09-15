@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using Controller;
 
 namespace ConsoleEdition
 {
@@ -6,7 +8,16 @@ namespace ConsoleEdition
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Data.Initialize();
+            Data.NextRace();
+
+            Console.WriteLine($"Track: {Data.CurrentRace.Track.Name}");
+
+            // game loop
+            for(; ; )
+            {
+                Thread.Sleep(100);
+            }
         }
     }
 }
