@@ -12,7 +12,13 @@ namespace Model
         public Track(string name, SectionTypes[] sections)
         {
             Name = name;
-            // TODO Deal with the sections thing.
+
+            // instantiate Sections linkedlist. Then loop through array and fill linkedlist with Section objects.
+            Sections = new LinkedList<Section>();
+            foreach (SectionTypes sectionType in sections)
+            {
+                Sections.AddLast(new Section(sectionType));
+            }
         }
     }
 }
