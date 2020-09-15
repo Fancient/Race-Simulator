@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Model
@@ -18,8 +19,8 @@ namespace Model
 
         public Track NextTrack()
         {
-            // TODO: Implement NextTrack()
-            return null;
+            // check if no tracks left, return null. otherwise return next track in queue
+            return Tracks.Count > 0 ? Tracks.Dequeue() : null;
         }
     }
 }
