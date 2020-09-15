@@ -112,6 +112,7 @@ namespace Controller
 
         public static void NextRace()
         {
+            // get next track from competitionData, then perform null check. when not null create a new race.
             Track currentTrack = CompetitionData.NextTrack();
             if (currentTrack != null) CurrentRace = new Race(currentTrack, CompetitionData.Participants);
         }
