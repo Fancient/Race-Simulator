@@ -11,6 +11,10 @@ namespace Model
         public IParticipant Right { get; set; }
         public int DistanceRight { get; set; }
 
-        // TODO: Constructor?
+        public SectionData()
+        {
+            // missing some info about this class
+            // TODO: implement constructor
+        }
     }
 }
