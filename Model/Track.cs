@@ -13,7 +13,8 @@ namespace Model
         {
             Name = name;
 
-            // instantiate Sections linkedlist. Then loop through array and fill linkedlist with Section objects.
+            // instantiate Sections LinkedList. Loop through SectionTypes[] parameter,
+            // add new section of current section type to LinkedList.
             Sections = new LinkedList<Section>();
             foreach (SectionTypes sectionType in sections)
             {
