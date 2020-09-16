@@ -24,5 +24,15 @@ namespace ModelTest
 
             Assert.IsNull(result);
         }
+
+        [Test]
+        public void NextTrack_OneInQueue_ReturnTrack()
+        {
+            Track track = new Track("Track", new SectionTypes[]{});
+            _competition.Tracks.Enqueue(track);
+            var result = _competition.NextTrack();
+
+            Assert.AreEqual(track, result);
+        }
     }
 }
