@@ -1,7 +1,6 @@
 using NUnit.Framework;
-using Controller;
 
-namespace ControllerTest
+namespace Controller.Test
 {
     [TestFixture]
     public class DataTest

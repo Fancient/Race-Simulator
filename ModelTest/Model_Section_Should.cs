@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
-using Model;
+﻿using NUnit.Framework;
 
-namespace ModelTest
+namespace Model.Test
 {
     [TestFixture]
     class Model_Section_Should

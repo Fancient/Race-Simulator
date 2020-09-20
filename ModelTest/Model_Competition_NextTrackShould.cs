@@ -1,11 +1,6 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Serialization;
-using Model;
 
-namespace ModelTest
+namespace Model.Test
 {
     [TestFixture]
     class Model_Competition_NextTrackShould

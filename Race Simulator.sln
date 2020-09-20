@@ -9,14 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller", "Controller\Controller.csproj", "{39CC6FDC-2023-494D-8578-713059B1A318}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControllerTest", "ControllerTest\ControllerTest.csproj", "{58B41A90-650D-4A0D-899B-8076A8847680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller.Test", "ControllerTest\Controller.Test.csproj", "{58B41A90-650D-4A0D-899B-8076A8847680}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F97D322F-39B8-4BDA-A5CA-C08B2C2E535F}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelTest", "ModelTest\ModelTest.csproj", "{7D52FC0E-0821-45A1-87BC-24F7AD499B28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model.Test", "ModelTest\Model.Test.csproj", "{7D52FC0E-0821-45A1-87BC-24F7AD499B28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
