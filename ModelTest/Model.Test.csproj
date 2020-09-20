@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Model_Track\" />
+  </ItemGroup>
+
 </Project>
