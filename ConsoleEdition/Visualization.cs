@@ -43,24 +43,28 @@ namespace ConsoleEdition
                 SectionTypes.Straight => ((int)direction % 2) switch
                 {
                     0 => _straightVertical,
-                    1 => _straightHorizontal
+                    1 => _straightHorizontal,
+                    _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
                 },
                 SectionTypes.LeftCorner => (int)direction switch
                 {
                     0 => _cornerNW,
                     1 => _cornerSW,
                     2 => _cornerSE,
-                    3 => _cornerNE
+                    3 => _cornerNE,
+                    _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
                 },
                 SectionTypes.RightCorner => (int)direction switch
                 {
                     0 => _cornerNE,
                     1 => _cornerNW,
                     2 => _cornerSW,
-                    3 => _cornerSE
+                    3 => _cornerSE,
+                    _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
                 },
                 SectionTypes.StartGrid => _startGridHorizontal,
-                SectionTypes.Finish => _finishHorizontal
+                SectionTypes.Finish => _finishHorizontal,
+                _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null)
             };
         }
 
@@ -111,7 +115,8 @@ namespace ConsoleEdition
                 Direction.N => Direction.W,
                 Direction.E => Direction.N,
                 Direction.S => Direction.E,
-                Direction.W => Direction.S
+                Direction.W => Direction.S,
+                _ => throw new ArgumentOutOfRangeException(nameof(d), d, null)
             };
         }
 
@@ -122,7 +127,8 @@ namespace ConsoleEdition
                 Direction.N => Direction.E,
                 Direction.E => Direction.S,
                 Direction.S => Direction.W,
-                Direction.W => Direction.N
+                Direction.W => Direction.N,
+                _ => throw new ArgumentOutOfRangeException(nameof(d), d, null)
             };
         }
 
