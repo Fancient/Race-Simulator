@@ -29,6 +29,8 @@ namespace Controller
             Participants = participants;
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
+
+            PlaceParticipantsOnStartGrid();
         }
 
         public void RandomizeEquipment()
@@ -38,6 +40,58 @@ namespace Controller
                 participant.Equipment.Performance = _random.Next();
                 participant.Equipment.Quality = _random.Next();
             }
+        }
+
+        public void PlaceParticipantsOnStartGrid()
+        {
+            // create List of startgrids, from front to back
+            List<Section> startGrids = GetStartGrids();
+
+            // look at amount of participants and amount of start places.
+            int amountToPlace = 0;
+            if (Participants.Count >= startGrids.Count * 2)
+                amountToPlace = startGrids.Count * 2;
+            else if (Participants.Count < startGrids.Count * 2)
+                amountToPlace = Participants.Count;
+
+            bool side = false; // false is left, true is right
+            int currentStartGridIndex = 0;
+            for (int i = 0; i < amountToPlace; i++)
+            {
+                // place
+                PlaceParticipant(Participants[i], side, startGrids[currentStartGridIndex]);
+                // flip side
+                side = !side;
+                // up section index on every uneven number for i
+                if (i % 2 == 1)
+                    currentStartGridIndex++;
+            }
+
+        }
+
+        public List<Section> GetStartGrids()
+        {
+            List<Section> startGridSections = new List<Section>();
+
+            // put all sections in list that have sectiontype StartGrid
+            foreach (Section trackSection in Track.Sections)
+            {
+                if (trackSection.SectionType == SectionTypes.StartGrid)
+                    startGridSections.Add(trackSection);
+            }
+            
+            // reverse list
+            startGridSections.Reverse();
+
+            return startGridSections;
+        }
+
+        public void PlaceParticipant(IParticipant p, bool side, Section section)
+        {
+            if (side)
+                GetSectionData(section).Right = p;
+            else
+                GetSectionData(section).Left = p;
         }
     }
 }

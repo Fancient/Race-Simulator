@@ -15,11 +15,19 @@ namespace Model
 
             // instantiate Sections LinkedList. Loop through SectionTypes[] parameter,
             // add new section of current section type to LinkedList.
-            Sections = new LinkedList<Section>();
-            foreach (SectionTypes sectionType in sections)
+            Sections = GenerateSections(sections);
+
+        }
+
+        public LinkedList<Section> GenerateSections(SectionTypes[] sectionTypes)
+        {
+            LinkedList<Section> sections = new LinkedList<Section>();
+            foreach (SectionTypes sectionType in sectionTypes)
             {
-                Sections.AddLast(new Section(sectionType));
+                sections.AddLast(new Section(sectionType));
             }
+
+            return sections;
         }
     }
 }

@@ -3,18 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30330.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleEdition", "ConsoleEdition\ConsoleEdition.csproj", "{4A9E2EF6-37E0-4F4D-964A-875E2437CE4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleEdition", "ConsoleEdition\ConsoleEdition.csproj", "{4A9E2EF6-37E0-4F4D-964A-875E2437CE4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{577FFF10-39CA-4D62-926E-752F2E68206A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{577FFF10-39CA-4D62-926E-752F2E68206A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controller", "Controller\Controller.csproj", "{39CC6FDC-2023-494D-8578-713059B1A318}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller", "Controller\Controller.csproj", "{39CC6FDC-2023-494D-8578-713059B1A318}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControllerTest", "ControllerTest\ControllerTest.csproj", "{58B41A90-650D-4A0D-899B-8076A8847680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Controller.Test", "ControllerTest\Controller.Test.csproj", "{58B41A90-650D-4A0D-899B-8076A8847680}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F97D322F-39B8-4BDA-A5CA-C08B2C2E535F}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model.Test", "ModelTest\Model.Test.csproj", "{7D52FC0E-0821-45A1-87BC-24F7AD499B28}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{58B41A90-650D-4A0D-899B-8076A8847680}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58B41A90-650D-4A0D-899B-8076A8847680}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58B41A90-650D-4A0D-899B-8076A8847680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D52FC0E-0821-45A1-87BC-24F7AD499B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D52FC0E-0821-45A1-87BC-24F7AD499B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D52FC0E-0821-45A1-87BC-24F7AD499B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D52FC0E-0821-45A1-87BC-24F7AD499B28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
