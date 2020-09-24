@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Controller;
 using Model;
 
 namespace ConsoleEdition
@@ -20,20 +21,41 @@ namespace ConsoleEdition
         private static int _cPosX = _cursorStartPosX;
         private static int _cPosY = _cursorStartPosY;
 
+        private static Race _currentRace;
+
         // tracks always start pointing right.
         private static Direction _currentDirection = Direction.E;
 
+        // TODO: change straightHorizontal and straightVertical to 4 seperate strings with NESW
         #region graphics
-        private static string[] _finishHorizontal = { "----", "  # ", "  # ", "----" };
-        private static string[] _startGridHorizontal = { "----", "  ] ", "  ] ", "----" };
+        private static string[] _finishHorizontal = { "----", " 1# ", "2 # ", "----" };
+        private static string[] _startGridHorizontal = { "----", " 1] ", "2]  ", "----" };
 
-        private static string[] _straightHorizontal = {"----", "    ", "    ", "----"};
-        private static string[] _straightVertical = {"|  |", "|  |", "|  |", "|  |"};
+        private static string[] _straightHorizontal = { "----", "  1 ", " 2  ", "----" };
+        private static string[] _straightVertical = { "|  |", "|2 |", "| 1|", "|  |" };
 
-        private static string[] _cornerNE = {" /--", "/   ", "|   ", "|  /"};
-        private static string[] _cornerNW = {@"--\ ", @"   \", @"   |", @"\  |"};
-        private static string[] _cornerSE = {@"|  \", @"|   ", @"\   ", @" \--"};
-        private static string[] _cornerSW = { "/  |", "   |", "   /", "--/ " };
+        private static string[] _cornerNE = { " /--", "/1  ", "| 2 ", "|  /" };
+        private static string[] _cornerNW =
+        {
+            @"--\ ",
+            @"  1\",
+            @" 2 |",
+            @"\  |"
+        };
+        private static string[] _cornerSE =
+        {
+            @"|  \",
+            @"| 1 ",
+            @"\2  ",
+            @" \--"
+        };
+        private static string[] _cornerSW =
+        {
+            "/  |", 
+            " 1 |",
+            "  2/",
+            "--/ "
+        };
         #endregion
 
         public static string[] SectionTypeToGraphic(SectionTypes sectionType, Direction direction)
@@ -68,9 +90,10 @@ namespace ConsoleEdition
             };
         }
 
-        public static void Initialize()
+        public static void Initialize(Race race)
         {
             // initialize some stuff
+            _currentRace = race;
         }
 
         public static void DrawTrack(Track track)
@@ -86,13 +109,16 @@ namespace ConsoleEdition
         public static void DrawSingleSection(Section section)
         {
             // first determine section string
-            string[] sectionStrings = SectionTypeToGraphic(section.SectionType, _currentDirection);
+            string[] sectionStrings = ReplacePlaceHolders(
+                SectionTypeToGraphic(section.SectionType, _currentDirection),
+                _currentRace.GetSectionData(section).Left, _currentRace.GetSectionData(section).Right
+            );
 
             // print section
             int tempY = _cPosY;
             foreach (string s in sectionStrings)
             {
-                Console.SetCursorPosition(_cPosX,tempY);
+                Console.SetCursorPosition(_cPosX, tempY);
                 Console.Write(s);
                 tempY++;
             }
@@ -150,6 +176,24 @@ namespace ConsoleEdition
                     _cPosX -= 4;
                     break;
             }
+        }
+
+        public static string[] ReplacePlaceHolders(string[] inputStrings, IParticipant leftParticipant, IParticipant rightParticipant)
+        {
+            // create returnStrings array
+            string[] returnStrings = new string[inputStrings.Length];
+
+            // gather letters from Participants, letter will be a whitespace when participant is null;
+            string lP = leftParticipant == null ? " " : leftParticipant.Name.Substring(0, 1).ToUpper();
+            string rP = rightParticipant == null ? " " : rightParticipant.Name.Substring(0, 1).ToUpper();
+
+            // replace string 1 and 2 with participants
+            for (int i = 0; i < returnStrings.Length; i++)
+            {
+                returnStrings[i] = inputStrings[i].Replace("1", lP).Replace("2", rP);
+            }
+
+            return returnStrings;
         }
     }
 }

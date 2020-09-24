@@ -15,7 +15,7 @@ namespace ConsoleEdition
 
             Console.WriteLine($"Track: {Data.CurrentRace.Track.Name}");
             
-            Visualization.Initialize();
+            Visualization.Initialize(Data.CurrentRace);
             Visualization.DrawTrack(Data.CurrentRace.Track);
 
             // game loop
