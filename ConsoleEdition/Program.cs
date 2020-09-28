@@ -16,6 +16,9 @@ namespace ConsoleEdition
             Console.WriteLine($"Track: {Data.CurrentRace.Track.Name}");
             
             Visualization.Initialize(Data.CurrentRace);
+            // add event
+            Data.CurrentRace.DriversChanged += Visualization.OnDriversChanged;
+
             Visualization.DrawTrack(Data.CurrentRace.Track);
 
             // game loop

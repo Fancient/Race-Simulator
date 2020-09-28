@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Timers;
 
 namespace Controller
 {
@@ -10,10 +11,13 @@ namespace Controller
         public Track Track { get; set; }
         public List<IParticipant> Participants { get; set; }
         public DateTime StartTime { get; set; }
-
+        
         private Random _random;
-
         private Dictionary<Section, SectionData> _positions;
+        private Timer timer;
+
+        // event for drivers changed positions
+        public event EventHandler<DriversChangedEventArgs> DriversChanged; 
 
         public SectionData GetSectionData(Section section)
         {
@@ -29,6 +33,8 @@ namespace Controller
             Participants = participants;
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
+            timer = new Timer(500);
+            timer.Elapsed += OnTimedEvent;
 
             PlaceParticipantsOnStartGrid();
         }
@@ -92,6 +98,16 @@ namespace Controller
                 GetSectionData(section).Right = p;
             else
                 GetSectionData(section).Left = p;
+        }
+
+        public void OnTimedEvent(object sender, EventArgs e)
+        {
+            // a
+        }
+
+        public void Start()
+        {
+            timer.Start();
         }
     }
 }

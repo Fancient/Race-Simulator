@@ -98,7 +98,7 @@ namespace ConsoleEdition
 
         public static void DrawTrack(Track track)
         {
-            // to test, first draw string.
+            // TODO: Reset currentPos here instead of only doing that on initialization, otherwise could cause issues with redrawing.
             foreach (Section trackSection in track.Sections)
             {
                 DrawSingleSection(trackSection);
@@ -194,6 +194,12 @@ namespace ConsoleEdition
             }
 
             return returnStrings;
+        }
+
+        // event handler OnDriversChanged, this is called when drivers change position on Track.
+        public static void OnDriversChanged(object sender, DriversChangedEventArgs e)
+        {
+            DrawTrack(e.Track);
         }
     }
 }
