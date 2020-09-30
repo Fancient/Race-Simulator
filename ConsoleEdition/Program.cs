@@ -21,9 +21,14 @@ namespace ConsoleEdition
 
             Visualization.DrawTrack(Data.CurrentRace.Track);
 
+            Data.CurrentRace.RandomizeEquipment();
+
+            //Data.CurrentRace.Start();
+
             // game loop
             for (; ; )
             {
+                Data.CurrentRace.OnTimedEvent(Data.CurrentRace, new EventArgs());
                 Thread.Sleep(100);
             }
         }

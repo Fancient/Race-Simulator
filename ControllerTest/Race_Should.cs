@@ -15,7 +15,7 @@ namespace Controller.Test
         private IEquipment equipment;
         private Track track;
 
-            [SetUp]
+        [SetUp]
         public void SetUp()
         {
             // setup track

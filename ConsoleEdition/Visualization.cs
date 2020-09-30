@@ -18,15 +18,14 @@ namespace ConsoleEdition
         private const int _cursorStartPosX = 24;
         private const int _cursorStartPosY = 12;
 
-        private static int _cPosX = _cursorStartPosX;
-        private static int _cPosY = _cursorStartPosY;
+        private static int _cPosX;
+        private static int _cPosY;
 
         private static Race _currentRace;
 
         // tracks always start pointing right.
         private static Direction _currentDirection = Direction.E;
 
-        // TODO: change straightHorizontal and straightVertical to 4 seperate strings with NESW
         #region graphics
         private static string[] _finishHorizontal = { "----", " 1# ", "2 # ", "----" };
         private static string[] _startGridHorizontal = { "----", " 1] ", "2]  ", "----" };
@@ -98,7 +97,13 @@ namespace ConsoleEdition
 
         public static void DrawTrack(Track track)
         {
-            // TODO: Reset currentPos here instead of only doing that on initialization, otherwise could cause issues with redrawing.
+            _cPosX = _cursorStartPosX;
+            _cPosY = _cursorStartPosY;
+            // just to be sure, reset cursorposition
+            Console.SetCursorPosition(_cPosX, _cPosY);
+            // for testing purposes, draw participants
+            printParticipants();
+
             foreach (Section trackSection in track.Sections)
             {
                 DrawSingleSection(trackSection);
@@ -200,6 +205,17 @@ namespace ConsoleEdition
         public static void OnDriversChanged(object sender, DriversChangedEventArgs e)
         {
             DrawTrack(e.Track);
+        }
+
+        private static void printParticipants()
+        {
+            // TODO: Remove debugging method
+            Console.SetCursorPosition(0,1);
+            foreach (IParticipant participant in _currentRace.Participants)
+            {
+                
+                Console.WriteLine($"{(participant.Name + ":").PadRight(7)} Speed: {participant.Equipment.Speed.ToString().PadRight(3)} Performance: {participant.Equipment.Performance.ToString().PadRight(3)} Actual speed {_currentRace.GetSpeedFromParticipant(participant).ToString().PadRight(3)} Distance: {_currentRace.GetDistanceParticipant(participant)}");
+            }
         }
     }
 }

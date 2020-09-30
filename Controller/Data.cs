@@ -20,9 +20,12 @@ namespace Controller
 
         public static void addParticipants()
         {
-            CompetitionData.Participants.Add(new Driver("Jaap", 0, new Car(10, 10, 10, false), TeamColors.Red));
+            CompetitionData.Participants.Add(new Driver("Jaap", 0, new Car(10, 10, 5, false), TeamColors.Red));
             CompetitionData.Participants.Add(new Driver("Sjaak", 0, new Car(10, 10, 10, false), TeamColors.Green));
-            CompetitionData.Participants.Add(new Driver("Manus", 0, new Car(10, 10, 10, false), TeamColors.Blue));
+            CompetitionData.Participants.Add(new Driver("Manus", 0, new Car(10, 10, 11, false), TeamColors.Blue));
+            CompetitionData.Participants.Add(new Driver("Arie", 0, new Car(10, 10, 10, false), TeamColors.Red));
+            CompetitionData.Participants.Add(new Driver("Lars", 0, new Car(10, 10, 12, false), TeamColors.Green));
+            CompetitionData.Participants.Add(new Driver("Elsa", 0, new Car(10, 10, 15, false), TeamColors.Blue));
         }
 
         public static void addTracks()
