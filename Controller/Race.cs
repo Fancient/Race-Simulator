@@ -20,6 +20,13 @@ namespace Controller
         private Dictionary<Section, SectionData> _positions;
         private Timer timer;
 
+        // keeping track of laps
+        private const int Laps = 5;
+        private Dictionary<IParticipant, int> _lapsDriven;
+        private SectionData finishSectionData;
+        private IParticipant finishPreviousLeft;
+        private IParticipant finishPreviousRight;
+
         // event for drivers changed positions
         public event EventHandler<DriversChangedEventArgs> DriversChanged; 
 
@@ -41,6 +48,24 @@ namespace Controller
             timer.Elapsed += OnTimedEvent;
 
             PlaceParticipantsOnStartGrid();
+            InitializeParticipantLaps();
+            InitializeFinishSectionData();
+        }
+
+        private void InitializeFinishSectionData()
+        {
+            // find finish section from track (there's only one finish)
+            finishSectionData = GetSectionData(Track.Sections.First(a => a.SectionType == SectionTypes.Finish));
+        }
+
+        private void InitializeParticipantLaps()
+        {
+            _lapsDriven = new Dictionary<IParticipant, int>();
+            // fill dictionary
+            foreach (IParticipant participant in Participants)
+            {
+                _lapsDriven.Add(participant, 0);
+            }
         }
 
         public void RandomizeEquipment()
@@ -110,6 +135,7 @@ namespace Controller
             // Steps to take:
             // Traverse sections list from end to beginning. (this is so when a driver moves enough, a positions opens up for the driver behind
             LinkedListNode<Section> currentSectionNode = Track.Sections.Last;
+            UpdateLaps();
 
             while (currentSectionNode != null)
             {
@@ -306,6 +332,34 @@ namespace Controller
             return 0;
         }
 
+        public int GetLapsParticipant(IParticipant participant)
+        {
+            // TODO: Remove debugging method
+            return _lapsDriven[participant];
+        }
+
+        private void UpdateLaps()
+        {
+            // check driver on finish section, if lap threshold is reached, pull em off section.
+            // TODO: Make this own method, this is doing 2 seperate things (not SOLID)
+            if (finishSectionData.Left != null && _lapsDriven[finishSectionData.Left] >= Laps)
+                finishSectionData.Left = null;
+            if (finishSectionData.Right != null && _lapsDriven[finishSectionData.Right] >= Laps)
+                finishSectionData.Right = null;
+
+            // look for a driver on finish section, if driver is on finish, up its lap
+            // TODO: I'm noticing a DRY theme when I'm dealing with SectionData's Left and Right.
+            if (finishSectionData.Left != null && finishSectionData.Left != finishPreviousLeft)
+            {
+                _lapsDriven[finishSectionData.Left]++;
+                finishPreviousLeft = finishSectionData.Left;
+            }
+            if (finishSectionData.Right != null && finishSectionData.Right != finishPreviousRight)
+            {
+                _lapsDriven[finishSectionData.Right]++;
+                finishPreviousRight = finishSectionData.Right;
+            }
+        }
         public void Start()
         {
             timer.Start();
