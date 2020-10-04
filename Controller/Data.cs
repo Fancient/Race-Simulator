@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using Model;
 
@@ -115,9 +116,25 @@ namespace Controller
 
         public static void NextRace()
         {
+            // cleanup previous race
+            if (CurrentRace != null) // this is because first time there is no previous race to clean up
+            {
+                CurrentRace.CleanUp();
+            }
+
             // get next track from competitionData, then perform null check. when not null create a new race.
             Track currentTrack = CompetitionData.NextTrack();
-            if (currentTrack != null) CurrentRace = new Race(currentTrack, CompetitionData.Participants);
+            if (currentTrack != null)
+            {
+                CurrentRace = new Race(currentTrack, CompetitionData.Participants);
+                CurrentRace.RaceFinished += OnRaceFinished;
+                CurrentRace.Start();
+            }
+        }
+
+        public static void OnRaceFinished(object sender, EventArgs e)
+        {
+            NextRace();
         }
     }
 }

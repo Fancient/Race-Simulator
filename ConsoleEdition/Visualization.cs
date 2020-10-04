@@ -24,7 +24,7 @@ namespace ConsoleEdition
         private static Race _currentRace;
 
         // tracks always start pointing right.
-        private static Direction _currentDirection = Direction.E;
+        private static Direction _currentDirection;
 
         #region graphics
         private static string[] _finishHorizontal = { "----", " 1# ", "2 # ", "----" };
@@ -91,8 +91,17 @@ namespace ConsoleEdition
 
         public static void Initialize(Race race)
         {
-            // initialize some stuff
+            // initialize race and prepare console
             _currentRace = race;
+            _currentDirection = Direction.E;
+            PrepareConsole();
+        }
+
+        public static void PrepareConsole()
+        {
+            Console.Clear();
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine($"Track: {_currentRace.Track.Name}");
         }
 
         public static void DrawTrack(Track track)

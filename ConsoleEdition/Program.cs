@@ -13,7 +13,7 @@ namespace ConsoleEdition
 
             Console.SetWindowSize(180,60);
 
-            Console.WriteLine($"Track: {Data.CurrentRace.Track.Name}");
+            //Console.WriteLine($"Track: {Data.CurrentRace.Track.Name}");
             
             Visualization.Initialize(Data.CurrentRace);
             // add event
@@ -28,7 +28,7 @@ namespace ConsoleEdition
             // game loop
             for (; ; )
             {
-                Data.CurrentRace.OnTimedEvent(Data.CurrentRace, new EventArgs());
+                //Data.CurrentRace.OnTimedEvent(Data.CurrentRace, new EventArgs());
                 Thread.Sleep(100);
             }
         }

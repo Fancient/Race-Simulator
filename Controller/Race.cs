@@ -19,9 +19,10 @@ namespace Controller
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
         private Timer timer;
+        private int timerInterval = 200;
 
         // keeping track of laps
-        private const int Laps = 5;
+        private const int Laps = 3;
         private Dictionary<IParticipant, int> _lapsDriven;
         private SectionData finishSectionData;
         private IParticipant finishPreviousLeft;
@@ -29,6 +30,9 @@ namespace Controller
 
         // event for drivers changed positions
         public event EventHandler<DriversChangedEventArgs> DriversChanged; 
+
+        // event for race finish
+        public event EventHandler RaceFinished;
 
         public SectionData GetSectionData(Section section)
         {
@@ -44,7 +48,7 @@ namespace Controller
             Participants = participants;
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
-            timer = new Timer(500);
+            timer = new Timer(timerInterval);
             timer.Elapsed += OnTimedEvent;
 
             PlaceParticipantsOnStartGrid();
@@ -136,6 +140,12 @@ namespace Controller
             // Traverse sections list from end to beginning. (this is so when a driver moves enough, a positions opens up for the driver behind
             LinkedListNode<Section> currentSectionNode = Track.Sections.Last;
             UpdateLaps();
+            // check if any participants on track, if not, race is finished.
+            if (CheckRaceFinished())
+            {
+                // TODO: Mess with ordering of events here to get it to display correctly
+                RaceFinished?.Invoke(this, new EventArgs());
+            }
 
             while (currentSectionNode != null)
             {
@@ -360,9 +370,24 @@ namespace Controller
                 finishPreviousRight = finishSectionData.Right;
             }
         }
+
+        private bool CheckRaceFinished()
+        {
+            if (_positions.Values.FirstOrDefault(a => a.Left != null || a.Right != null) == null)
+                return true;
+            return false;
+        }
+
         public void Start()
         {
             timer.Start();
+        }
+
+        public void CleanUp()
+        {
+            DriversChanged = null;
+            timer.Stop();
+            RaceFinished = null;
         }
     }
 }
