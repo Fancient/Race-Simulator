@@ -54,6 +54,7 @@ namespace Controller
             PlaceParticipantsOnStartGrid();
             InitializeParticipantLaps();
             InitializeFinishSectionData();
+            RandomizeEquipment();
         }
 
         private void InitializeFinishSectionData()

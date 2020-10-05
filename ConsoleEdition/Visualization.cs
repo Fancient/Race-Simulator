@@ -89,6 +89,17 @@ namespace ConsoleEdition
             };
         }
 
+        public static void OnNextRaceNextRaceEvent(object sender, RaceStartEventArgs e)
+        {
+            // reinitialize
+            Initialize(e.Race);
+
+            // link events, draw track first time
+            _currentRace.DriversChanged += OnDriversChanged;
+
+            DrawTrack(_currentRace.Track);
+        }
+
         public static void Initialize(Race race)
         {
             // initialize race and prepare console

@@ -8,22 +8,12 @@ namespace ConsoleEdition
     {
         static void Main(string[] args)
         {
-            Data.Initialize();
-            Data.NextRace();
+            Console.SetWindowSize(180, 60);
 
-            Console.SetWindowSize(180,60);
+            Data.Initialize(); // initialize data (tracks and participants)
+            Data.VisualizationNextRaceEventHandler += Visualization.OnNextRaceNextRaceEvent; // tell data about visualization's next race method.
+            Data.NextRace(); // start first race
 
-            //Console.WriteLine($"Track: {Data.CurrentRace.Track.Name}");
-            
-            Visualization.Initialize(Data.CurrentRace);
-            // add event
-            Data.CurrentRace.DriversChanged += Visualization.OnDriversChanged;
-
-            Visualization.DrawTrack(Data.CurrentRace.Track);
-
-            Data.CurrentRace.RandomizeEquipment();
-
-            //Data.CurrentRace.Start();
 
             // game loop
             for (; ; )

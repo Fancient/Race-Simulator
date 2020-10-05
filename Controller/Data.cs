@@ -12,6 +12,8 @@ namespace Controller
 
         public static Race CurrentRace { get; set; }
 
+        public static event EventHandler<RaceStartEventArgs> VisualizationNextRaceEventHandler;
+
         public static void Initialize()
         {
             CompetitionData = new Competition();
@@ -128,7 +130,9 @@ namespace Controller
             {
                 CurrentRace = new Race(currentTrack, CompetitionData.Participants);
                 CurrentRace.RaceFinished += OnRaceFinished;
+                VisualizationNextRaceEventHandler?.Invoke(null, new RaceStartEventArgs() { Race = CurrentRace});
                 CurrentRace.Start();
+
             }
         }
 
