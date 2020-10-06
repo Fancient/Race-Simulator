@@ -16,7 +16,7 @@ namespace ConsoleEdition
     public static class Visualization
     {
         private const int _cursorStartPosX = 24;
-        private const int _cursorStartPosY = 12;
+        private const int _cursorStartPosY = 16;
 
         private static int _cPosX;
         private static int _cPosY;
@@ -208,9 +208,10 @@ namespace ConsoleEdition
             // create returnStrings array
             string[] returnStrings = new string[inputStrings.Length];
 
+             
             // gather letters from Participants, letter will be a whitespace when participant is null;
-            string lP = leftParticipant == null ? " " : leftParticipant.Name.Substring(0, 1).ToUpper();
-            string rP = rightParticipant == null ? " " : rightParticipant.Name.Substring(0, 1).ToUpper();
+            string lP = leftParticipant == null ? " " : leftParticipant.Equipment.IsBroken ? "X" : leftParticipant.Name.Substring(0, 1).ToUpper();
+            string rP = rightParticipant == null ? " " : rightParticipant.Equipment.IsBroken ? "X" : rightParticipant.Name.Substring(0, 1).ToUpper();
 
             // replace string 1 and 2 with participants
             for (int i = 0; i < returnStrings.Length; i++)
@@ -234,7 +235,7 @@ namespace ConsoleEdition
             foreach (IParticipant participant in _currentRace.Participants)
             {
                 
-                Console.WriteLine($"{(participant.Name + ":").PadRight(7)} Speed: {participant.Equipment.Speed.ToString().PadRight(3)} Performance: {participant.Equipment.Performance.ToString().PadRight(3)} Actual speed {_currentRace.GetSpeedFromParticipant(participant).ToString().PadRight(3)} Distance: {_currentRace.GetDistanceParticipant(participant).ToString().PadRight(3)} Laps: {_currentRace.GetLapsParticipant(participant)}");
+                Console.WriteLine($"{(participant.Name + ":").PadRight(7)} Speed: {participant.Equipment.Speed.ToString().PadRight(3)} Performance: {participant.Equipment.Performance.ToString().PadRight(3)} Quality: {participant.Equipment.Quality.ToString().PadRight(3)} Actual speed {_currentRace.GetSpeedFromParticipant(participant).ToString().PadRight(3)} Distance: {_currentRace.GetDistanceParticipant(participant).ToString().PadRight(3)} Laps: {_currentRace.GetLapsParticipant(participant)} broken: {participant.Equipment.IsBroken.ToString().PadRight(5)}");
             }
         }
     }

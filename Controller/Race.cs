@@ -22,7 +22,7 @@ namespace Controller
         private int timerInterval = 200;
 
         // keeping track of laps
-        private const int Laps = 3;
+        private const int Laps = 4;
         private Dictionary<IParticipant, int> _lapsDriven;
         private SectionData finishSectionData;
         private IParticipant finishPreviousLeft;
@@ -78,7 +78,7 @@ namespace Controller
             foreach (IParticipant participant in Participants)
             {
                 participant.Equipment.Performance = _random.Next(5, 16); //  5 <= performance <= 15
-                participant.Equipment.Quality = _random.Next(1, 11); // 1 <= quality <= 10
+                participant.Equipment.Quality = _random.Next(5, 21); // quality can be 1-20, but i don't generate really awful equipment
             }
         }
 
@@ -136,18 +136,20 @@ namespace Controller
 
         public void OnTimedEvent(object sender, EventArgs e)
         {
+            // TODO: Change values and bounds for Quality and Speed (speed x2 or x3, quality x2)
+            // fix broken drivers at random
+            RandomizeEquipmentFixing();
+            // randomize IsBroken for pariticpants
+            RandomEquipmentBreaking();
+
+            // update laps of drivers
+            UpdateLaps();
+
             // call method to change driverPositions.
             // Steps to take:
             // Traverse sections list from end to beginning. (this is so when a driver moves enough, a positions opens up for the driver behind
             LinkedListNode<Section> currentSectionNode = Track.Sections.Last;
-            UpdateLaps();
-            // check if any participants on track, if not, race is finished.
-            if (CheckRaceFinished())
-            {
-                // TODO: Mess with ordering of events here to get it to display correctly
-                RaceFinished?.Invoke(this, new EventArgs());
-            }
-
+            
             while (currentSectionNode != null)
             {
                 // get sectiondata variables for current and next section
@@ -161,20 +163,59 @@ namespace Controller
                 currentSectionNode = currentSectionNode.Previous;
             }
 
-
             // raise driversChanged event.
             DriversChanged?.Invoke(this, new DriversChangedEventArgs(){Track = this.Track});
+
+            // check if any participants on track, if not, race is finished.
+            if (CheckRaceFinished())
+            {
+                RaceFinished?.Invoke(this, new EventArgs());
+            }
+        }
+
+        private void RandomEquipmentBreaking()
+        {
+            // quality of a participant is 1 to 10; meaning a 0.1 to 0.01% chance of breaking.
+            List<IParticipant> participantsOnTrack =
+                _positions.Values.Where(a => a.Left != null).Select(a => a.Left).Concat(_positions.Values.Where(a => a.Right != null).Select(a => a.Right)).ToList();
+            foreach (IParticipant participant in participantsOnTrack)
+            {
+                double qualityChance = (11 - (participant.Equipment.Quality * 0.5)) * 0.0005;
+                if (_random.NextDouble() < qualityChance)
+                {
+                    participant.Equipment.IsBroken = true;
+                }
+            }
+        }
+
+        private void RandomizeEquipmentFixing()
+        {
+            foreach (IParticipant participant in Participants.Where(p => p.Equipment.IsBroken))
+            {
+                // chance is 2% of being fixed.
+                if (_random.NextDouble() < 0.02)
+                {
+                    participant.Equipment.IsBroken = false;
+                    // downgrade quality of equipment by 1, assure proper bounds
+                    if(participant.Equipment.Quality > 1)
+                        participant.Equipment.Quality--;
+                    // downgrade base speed of equipment by 1, assure proper bounds;
+                    if (participant.Equipment.Speed > 5)
+                        participant.Equipment.Speed--;
+                }
+            }
         }
 
         private void MoveParticipantsOnSectionData(SectionData currentSectionData, SectionData nextSectionData)
         {
             // first check participants on currentsectiondata and update distance.
-            if (currentSectionData.Left != null)
+            // only up distance when participant isn't broken.
+            if (currentSectionData.Left != null && !currentSectionData.Left.Equipment.IsBroken)
             {
                 currentSectionData.DistanceLeft += GetSpeedFromParticipant(currentSectionData.Left);
             }
 
-            if (currentSectionData.Right != null)
+            if (currentSectionData.Right != null && !currentSectionData.Right.Equipment.IsBroken)
             {
                 currentSectionData.DistanceRight += GetSpeedFromParticipant(currentSectionData.Right);
             }
@@ -255,7 +296,7 @@ namespace Controller
 
         public int GetSpeedFromParticipant(IParticipant iParticipant)
         {
-            return Convert.ToInt32(Math.Ceiling(0.1 * iParticipant.Equipment.Speed * iParticipant.Equipment.Performance + 18));
+            return Convert.ToInt32(Math.Ceiling(0.1 * (iParticipant.Equipment.Speed * 0.5) * iParticipant.Equipment.Performance + 18));
         }
 
         private int FreePlacesLeftOnSectionData(SectionData sd)
