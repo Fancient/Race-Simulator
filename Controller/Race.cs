@@ -28,6 +28,9 @@ namespace Controller
         private IParticipant finishPreviousLeft;
         private IParticipant finishPreviousRight;
 
+        // list for finish order
+        private List<IParticipant> _finishOrder;
+
         // event for drivers changed positions
         public event EventHandler<DriversChangedEventArgs> DriversChanged; 
 
@@ -48,6 +51,7 @@ namespace Controller
             Participants = participants;
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
+            _finishOrder = new List<IParticipant>();
             timer = new Timer(timerInterval);
             timer.Elapsed += OnTimedEvent;
 
@@ -394,10 +398,17 @@ namespace Controller
         {
             // check driver on finish section, if lap threshold is reached, pull em off section.
             // TODO: Make this own method, this is doing 2 seperate things (not SOLID)
+            // TODO: Make finishing fair.
             if (finishSectionData.Left != null && _lapsDriven[finishSectionData.Left] >= Laps)
+            {
+                _finishOrder.Add(finishSectionData.Left);
                 finishSectionData.Left = null;
+            }
             if (finishSectionData.Right != null && _lapsDriven[finishSectionData.Right] >= Laps)
+            {
+                _finishOrder.Add(finishSectionData.Right);
                 finishSectionData.Right = null;
+            }
 
             // look for a driver on finish section, if driver is on finish, up its lap
             // TODO: I'm noticing a DRY theme when I'm dealing with SectionData's Left and Right.
@@ -418,6 +429,11 @@ namespace Controller
             if (_positions.Values.FirstOrDefault(a => a.Left != null || a.Right != null) == null)
                 return true;
             return false;
+        }
+
+        public List<IParticipant> GetFinishOrderParticipants()
+        {
+            return _finishOrder;
         }
 
         public void Start()
