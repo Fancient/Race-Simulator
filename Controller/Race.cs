@@ -18,8 +18,8 @@ namespace Controller
         
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
-        private Timer timer;
-        private int timerInterval = 200;
+        private Timer _timer;
+        private const int timerInterval = 200;
 
         // keeping track of laps
         private const int Laps = 4;
@@ -52,8 +52,8 @@ namespace Controller
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
             _finishOrder = new List<IParticipant>();
-            timer = new Timer(timerInterval);
-            timer.Elapsed += OnTimedEvent;
+            _timer = new Timer(timerInterval);
+            _timer.Elapsed += OnTimedEvent;
 
             PlaceParticipantsOnStartGrid();
             InitializeParticipantLaps();
@@ -138,7 +138,7 @@ namespace Controller
                 GetSectionData(section).Left = p;
         }
 
-        public void OnTimedEvent(object sender, EventArgs e)
+        public void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             // TODO: Change values and bounds for Quality and Speed (speed x2 or x3, quality x2)
             // fix broken drivers at random
@@ -148,24 +148,10 @@ namespace Controller
 
             // update laps of drivers
             UpdateLaps();
+            
 
             // call method to change driverPositions.
-            // Steps to take:
-            // Traverse sections list from end to beginning. (this is so when a driver moves enough, a positions opens up for the driver behind
-            LinkedListNode<Section> currentSectionNode = Track.Sections.Last;
-            
-            while (currentSectionNode != null)
-            {
-                // get sectiondata variables for current and next section
-                SectionData currentSectionData = GetSectionData(currentSectionNode.Value);
-                SectionData nextSectionData = GetSectionData(currentSectionNode.Next != null ? currentSectionNode.Next.Value : Track.Sections.First.Value);
-
-                MoveParticipantsOnSectionData(currentSectionData, nextSectionData);
-                
-
-                // loop iterator
-                currentSectionNode = currentSectionNode.Previous;
-            }
+            MoveParticipants(e.SignalTime);
 
             // raise driversChanged event.
             DriversChanged?.Invoke(this, new DriversChangedEventArgs(){Track = this.Track});
@@ -210,7 +196,26 @@ namespace Controller
             }
         }
 
-        private void MoveParticipantsOnSectionData(SectionData currentSectionData, SectionData nextSectionData)
+        private void MoveParticipants(DateTime elapsedDateTime)
+        {
+            // Steps to take:
+            // Traverse sections list from end to beginning. (this is so when a driver moves enough, a positions opens up for the driver behind
+            LinkedListNode<Section> currentSectionNode = Track.Sections.Last;
+
+            while (currentSectionNode != null)
+            {
+                // get sectiondata variables for current and next section
+                SectionData currentSectionData = GetSectionData(currentSectionNode.Value);
+                SectionData nextSectionData = GetSectionData(currentSectionNode.Next != null ? currentSectionNode.Next.Value : Track.Sections.First.Value);
+
+                MoveParticipantsSectionData(currentSectionData, nextSectionData);
+
+                // loop iterator
+                currentSectionNode = currentSectionNode.Previous;
+            }
+        }
+
+        private void MoveParticipantsSectionData(SectionData currentSectionData, SectionData nextSectionData)
         {
             // first check participants on currentsectiondata and update distance.
             // only up distance when participant isn't broken.
@@ -240,8 +245,8 @@ namespace Controller
                 else if (freePlaces == 3)
                 {
                     // move both
-                    MoveParticipantTo(currentSectionData, nextSectionData, false, false, false);
-                    MoveParticipantTo(currentSectionData, nextSectionData, true, true, false);
+                    MoveSingleParticipant(currentSectionData, nextSectionData, false, false, false);
+                    MoveSingleParticipant(currentSectionData, nextSectionData, true, true, false);
                 }
                 else
                 {
@@ -250,17 +255,17 @@ namespace Controller
                     {
                         // prefer left
                         if (freePlaces == 1)
-                            MoveParticipantTo(currentSectionData, nextSectionData, false, false, true); // left to left
+                            MoveSingleParticipant(currentSectionData, nextSectionData, false, false, true); // left to left
                         else if (freePlaces == 2)
-                            MoveParticipantTo(currentSectionData, nextSectionData, false, true, true);
+                            MoveSingleParticipant(currentSectionData, nextSectionData, false, true, true);
                     }
                     else
                     {
                         // choose right
                         if (freePlaces == 1)
-                            MoveParticipantTo(currentSectionData, nextSectionData, true, false, true); // left to left
+                            MoveSingleParticipant(currentSectionData, nextSectionData, true, false, true); // left to left
                         else if (freePlaces == 2)
-                            MoveParticipantTo(currentSectionData, nextSectionData, true, true, true);
+                            MoveSingleParticipant(currentSectionData, nextSectionData, true, true, true);
                     }
                 }
 
@@ -275,10 +280,10 @@ namespace Controller
                     currentSectionData.DistanceLeft = 99;
                 else if (freePlaces == 3 || freePlaces == 1)
                     // move from left to left
-                    MoveParticipantTo(currentSectionData, nextSectionData, false, false, false);
+                    MoveSingleParticipant(currentSectionData, nextSectionData, false, false, false);
                 else if (freePlaces == 2)
                     // move from left to right
-                    MoveParticipantTo(currentSectionData, nextSectionData, false, true, false);
+                    MoveSingleParticipant(currentSectionData, nextSectionData, false, true, false);
                 #endregion
             }
             else if (currentSectionData.DistanceRight >= 100)
@@ -290,10 +295,10 @@ namespace Controller
                     currentSectionData.DistanceRight = 99;
                 else if (freePlaces == 3 || freePlaces == 2)
                     // move from right to right
-                    MoveParticipantTo(currentSectionData, nextSectionData, true, true, false);
+                    MoveSingleParticipant(currentSectionData, nextSectionData, true, true, false);
                 else if (freePlaces == 1)
                     // move from right to left
-                    MoveParticipantTo(currentSectionData, nextSectionData, true, false, false);
+                    MoveSingleParticipant(currentSectionData, nextSectionData, true, false, false);
                 #endregion
             }
         }
@@ -318,7 +323,7 @@ namespace Controller
             return returnval;
         }
 
-        private void MoveParticipantTo(SectionData current, SectionData next, bool start, bool end, bool correctOtherSide)
+        private void MoveSingleParticipant(SectionData current, SectionData next, bool start, bool end, bool correctOtherSide)
         {
             // bools start and end represent left or right, left is false, right is true
             if (start)
@@ -426,9 +431,7 @@ namespace Controller
 
         private bool CheckRaceFinished()
         {
-            if (_positions.Values.FirstOrDefault(a => a.Left != null || a.Right != null) == null)
-                return true;
-            return false;
+            return _positions.Values.FirstOrDefault(a => a.Left != null || a.Right != null) == null;
         }
 
         public List<IParticipant> GetFinishOrderParticipants()
@@ -438,13 +441,14 @@ namespace Controller
 
         public void Start()
         {
-            timer.Start();
+            StartTime = DateTime.Now;
+            _timer.Start();
         }
 
         public void CleanUp()
         {
             DriversChanged = null;
-            timer.Stop();
+            _timer.Stop();
             RaceFinished = null;
         }
     }
