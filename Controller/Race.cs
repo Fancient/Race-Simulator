@@ -204,19 +204,18 @@ namespace Controller
 
             while (currentSectionNode != null)
             {
-                // get sectiondata variables for current and next section
-                SectionData currentSectionData = GetSectionData(currentSectionNode.Value);
-                SectionData nextSectionData = GetSectionData(currentSectionNode.Next != null ? currentSectionNode.Next.Value : Track.Sections.First.Value);
-
-                MoveParticipantsSectionData(currentSectionData, nextSectionData);
+                // get sectiondata variables for currentSectionData and nextSectionData section
+                MoveParticipantsSectionData(currentSectionNode.Value, currentSectionNode.Next != null ? currentSectionNode.Next.Value : Track.Sections.First.Value, elapsedDateTime);
 
                 // loop iterator
                 currentSectionNode = currentSectionNode.Previous;
             }
         }
 
-        private void MoveParticipantsSectionData(SectionData currentSectionData, SectionData nextSectionData)
+        private void MoveParticipantsSectionData(Section currentSection, Section nextSection, DateTime elapsedDateTime)
         {
+            SectionData currentSectionData = GetSectionData(currentSection);
+            SectionData nextSectionData = GetSectionData(nextSection);
             // first check participants on currentsectiondata and update distance.
             // only up distance when participant isn't broken.
             if (currentSectionData.Left != null && !currentSectionData.Left.Equipment.IsBroken)
@@ -245,8 +244,8 @@ namespace Controller
                 else if (freePlaces == 3)
                 {
                     // move both
-                    MoveSingleParticipant(currentSectionData, nextSectionData, false, false, false);
-                    MoveSingleParticipant(currentSectionData, nextSectionData, true, true, false);
+                    MoveSingleParticipant(currentSection, nextSection, false, false, false, elapsedDateTime);
+                    MoveSingleParticipant(currentSection, nextSection, true, true, false, elapsedDateTime);
                 }
                 else
                 {
@@ -255,17 +254,17 @@ namespace Controller
                     {
                         // prefer left
                         if (freePlaces == 1)
-                            MoveSingleParticipant(currentSectionData, nextSectionData, false, false, true); // left to left
+                            MoveSingleParticipant(currentSection, nextSection, false, false, true, elapsedDateTime); // left to left
                         else if (freePlaces == 2)
-                            MoveSingleParticipant(currentSectionData, nextSectionData, false, true, true);
+                            MoveSingleParticipant(currentSection, nextSection, false, true, true, elapsedDateTime);
                     }
                     else
                     {
                         // choose right
                         if (freePlaces == 1)
-                            MoveSingleParticipant(currentSectionData, nextSectionData, true, false, true); // left to left
+                            MoveSingleParticipant(currentSection, nextSection, true, false, true, elapsedDateTime); // left to left
                         else if (freePlaces == 2)
-                            MoveSingleParticipant(currentSectionData, nextSectionData, true, true, true);
+                            MoveSingleParticipant(currentSection, nextSection, true, true, true, elapsedDateTime);
                     }
                 }
 
@@ -280,10 +279,10 @@ namespace Controller
                     currentSectionData.DistanceLeft = 99;
                 else if (freePlaces == 3 || freePlaces == 1)
                     // move from left to left
-                    MoveSingleParticipant(currentSectionData, nextSectionData, false, false, false);
+                    MoveSingleParticipant(currentSection, nextSection, false, false, false, elapsedDateTime);
                 else if (freePlaces == 2)
                     // move from left to right
-                    MoveSingleParticipant(currentSectionData, nextSectionData, false, true, false);
+                    MoveSingleParticipant(currentSection, nextSection, false, true, false, elapsedDateTime);
                 #endregion
             }
             else if (currentSectionData.DistanceRight >= 100)
@@ -295,10 +294,10 @@ namespace Controller
                     currentSectionData.DistanceRight = 99;
                 else if (freePlaces == 3 || freePlaces == 2)
                     // move from right to right
-                    MoveSingleParticipant(currentSectionData, nextSectionData, true, true, false);
+                    MoveSingleParticipant(currentSection, nextSection, true, true, false, elapsedDateTime);
                 else if (freePlaces == 1)
                     // move from right to left
-                    MoveSingleParticipant(currentSectionData, nextSectionData, true, false, false);
+                    MoveSingleParticipant(currentSection, nextSection, true, false, false, elapsedDateTime);
                 #endregion
             }
         }
@@ -323,33 +322,36 @@ namespace Controller
             return returnval;
         }
 
-        private void MoveSingleParticipant(SectionData current, SectionData next, bool start, bool end, bool correctOtherSide)
+        private void MoveSingleParticipant(Section currentSection, Section nextSection, bool start, bool end, bool correctOtherSide, DateTime elapsedDateTime)
         {
+            // TODO: Make an enum instead of bools.
             // bools start and end represent left or right, left is false, right is true
+            SectionData currentSectionData = GetSectionData(currentSection);
+            SectionData nextSectionData = GetSectionData(nextSection);
             if (start)
             {
                 // select right
                 if (end)
                 {
                     // go to right
-                    next.Right = current.Right;
-                    next.DistanceRight = current.DistanceRight - 100;
+                    nextSectionData.Right = currentSectionData.Right;
+                    nextSectionData.DistanceRight = currentSectionData.DistanceRight - 100;
                 }
                 else
                 {
                     // go to left
-                    next.Left = current.Right;
-                    next.DistanceLeft = current.DistanceRight - 100;
+                    nextSectionData.Left = currentSectionData.Right;
+                    nextSectionData.DistanceLeft = currentSectionData.DistanceRight - 100;
                 }
 
-                current.Right = null;
-                current.DistanceRight = 0;
+                currentSectionData.Right = null;
+                currentSectionData.DistanceRight = 0;
 
 
                 if (correctOtherSide)
                 {
                     // correct distance of left side
-                    current.DistanceLeft = 99;
+                    currentSectionData.DistanceLeft = 99;
                 }
             }
             else
@@ -358,23 +360,23 @@ namespace Controller
                 if (end)
                 {
                     // go to right
-                    next.Right = current.Left;
-                    next.DistanceRight = current.DistanceLeft - 100;
+                    nextSectionData.Right = currentSectionData.Left;
+                    nextSectionData.DistanceRight = currentSectionData.DistanceLeft - 100;
                 }
                 else
                 {
                     // go to left
-                    next.Left = current.Left;
-                    next.DistanceLeft = current.DistanceLeft - 100;
+                    nextSectionData.Left = currentSectionData.Left;
+                    nextSectionData.DistanceLeft = currentSectionData.DistanceLeft - 100;
                 }
 
-                current.Left = null;
-                current.DistanceLeft = 0;
+                currentSectionData.Left = null;
+                currentSectionData.DistanceLeft = 0;
 
                 if (correctOtherSide)
                 {
                     // correct distance of right side
-                    current.DistanceRight = 99;
+                    currentSectionData.DistanceRight = 99;
                 }
             }
         }
