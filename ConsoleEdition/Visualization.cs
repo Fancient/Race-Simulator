@@ -183,7 +183,7 @@ namespace ConsoleEdition
             };
         }
 
-
+        // todo: make reference
         public static void ChangeCursorToNextPosition()
         {
             switch (_currentDirection)
@@ -235,7 +235,7 @@ namespace ConsoleEdition
             foreach (IParticipant participant in _currentRace.Participants)
             {
                 
-                Console.WriteLine($"{(participant.Name + ":").PadRight(7)} Speed: {participant.Equipment.Speed.ToString().PadRight(3)} Performance: {participant.Equipment.Performance.ToString().PadRight(3)} Quality: {participant.Equipment.Quality.ToString().PadRight(3)} Actual speed {_currentRace.GetSpeedFromParticipant(participant).ToString().PadRight(3)} Distance: {_currentRace.GetDistanceParticipant(participant).ToString().PadRight(3)} Laps: {_currentRace.GetLapsParticipant(participant)} broken: {participant.Equipment.IsBroken.ToString().PadRight(5)}");
+                Console.WriteLine($"{(participant.Name + ":").PadRight(7)} Speed: {participant.Equipment.Speed.ToString().PadRight(3)} Performance: {participant.Equipment.Performance.ToString().PadRight(3)} Quality: {participant.Equipment.Quality.ToString().PadRight(3)} Actual speed {_currentRace.GetSpeedFromParticipant(participant).ToString().PadRight(3)} Distance: {_currentRace.GetDistanceParticipant(participant).ToString().PadRight(3)} Laps:{_currentRace.GetLapsParticipant(participant).ToString().PadLeft(2)} broken: {participant.Equipment.IsBroken.ToString().PadRight(5)}");
             }
         }
     }

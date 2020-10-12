@@ -11,5 +11,8 @@ namespace Model
         public IParticipant Right { get; set; }
         public int DistanceRight { get; set; }
 
+        public DateTime StartTimeLeft { get; set; }
+
+        public DateTime StartTimeRight { get; set; }
     }
 }

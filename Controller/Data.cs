@@ -138,6 +138,7 @@ namespace Controller
         public static void OnRaceFinished(object sender, EventArgs e)
         {
             CompetitionData.DeterminePoints(CurrentRace.GetFinishOrderParticipants());
+            CompetitionData.StoreRaceLength(CurrentRace.Track.Name, CurrentRace.GetRaceLength());
             NextRace();
         }
     }

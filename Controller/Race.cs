@@ -10,6 +10,11 @@ using System.Timers;
 
 namespace Controller
 {
+    enum Side
+    {
+        Left, 
+        Right
+    }
     public class Race
     {
         public Track Track { get; set; }
@@ -21,15 +26,24 @@ namespace Controller
         private Timer _timer;
         private const int timerInterval = 200;
 
+
         // keeping track of laps
         private const int Laps = 4;
         private Dictionary<IParticipant, int> _lapsDriven;
         private SectionData finishSectionData;
-        private IParticipant finishPreviousLeft;
-        private IParticipant finishPreviousRight;
 
         // list for finish order
         private List<IParticipant> _finishOrder;
+
+        // section times
+        private Storage<ParticipantSectionTime> _participantSectionTimeStorage;
+
+        // lap times
+        private Dictionary<IParticipant, DateTime> _participantTimeEachLap;
+        private Storage<ParticipantLapTime> _lapTimeStorage;
+
+        // Race Length
+        private DateTime EndTime;
 
         // event for drivers changed positions
         public event EventHandler<DriversChangedEventArgs> DriversChanged; 
@@ -52,6 +66,9 @@ namespace Controller
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
             _finishOrder = new List<IParticipant>();
+            _participantSectionTimeStorage = new Storage<ParticipantSectionTime>();
+            _lapTimeStorage = new Storage<ParticipantLapTime>();
+
             _timer = new Timer(timerInterval);
             _timer.Elapsed += OnTimedEvent;
 
@@ -73,7 +90,16 @@ namespace Controller
             // fill dictionary
             foreach (IParticipant participant in Participants)
             {
-                _lapsDriven.Add(participant, 0);
+                _lapsDriven.Add(participant, -1); // participants start before the finish line, so the first time they drive over the finish, they're at lap 0
+            }
+        }
+
+        private void InitializeParticipantTimeEachLap()
+        {
+            _participantTimeEachLap = new Dictionary<IParticipant, DateTime>();
+            foreach (IParticipant participant in Participants)
+            {
+                _participantTimeEachLap.Add(participant, StartTime); // first time element is starttime.
             }
         }
 
@@ -146,9 +172,6 @@ namespace Controller
             // randomize IsBroken for pariticpants
             RandomEquipmentBreaking();
 
-            // update laps of drivers
-            UpdateLaps();
-            
 
             // call method to change driverPositions.
             MoveParticipants(e.SignalTime);
@@ -159,6 +182,7 @@ namespace Controller
             // check if any participants on track, if not, race is finished.
             if (CheckRaceFinished())
             {
+                EndTime = e.SignalTime;
                 RaceFinished?.Invoke(this, new EventArgs());
             }
         }
@@ -244,8 +268,8 @@ namespace Controller
                 else if (freePlaces == 3)
                 {
                     // move both
-                    MoveSingleParticipant(currentSection, nextSection, false, false, false, elapsedDateTime);
-                    MoveSingleParticipant(currentSection, nextSection, true, true, false, elapsedDateTime);
+                    MoveSingleParticipant(currentSection, nextSection, Side.Left, Side.Left, false, elapsedDateTime);
+                    MoveSingleParticipant(currentSection, nextSection, Side.Right, Side.Right, false, elapsedDateTime);
                 }
                 else
                 {
@@ -254,17 +278,17 @@ namespace Controller
                     {
                         // prefer left
                         if (freePlaces == 1)
-                            MoveSingleParticipant(currentSection, nextSection, false, false, true, elapsedDateTime); // left to left
+                            MoveSingleParticipant(currentSection, nextSection, Side.Left, Side.Left, true, elapsedDateTime); // left to left
                         else if (freePlaces == 2)
-                            MoveSingleParticipant(currentSection, nextSection, false, true, true, elapsedDateTime);
+                            MoveSingleParticipant(currentSection, nextSection, Side.Left, Side.Right, true, elapsedDateTime);
                     }
                     else
                     {
                         // choose right
                         if (freePlaces == 1)
-                            MoveSingleParticipant(currentSection, nextSection, true, false, true, elapsedDateTime); // left to left
+                            MoveSingleParticipant(currentSection, nextSection, Side.Right, Side.Left, true, elapsedDateTime); // left to left
                         else if (freePlaces == 2)
-                            MoveSingleParticipant(currentSection, nextSection, true, true, true, elapsedDateTime);
+                            MoveSingleParticipant(currentSection, nextSection, Side.Right, Side.Right, true, elapsedDateTime);
                     }
                 }
 
@@ -279,10 +303,10 @@ namespace Controller
                     currentSectionData.DistanceLeft = 99;
                 else if (freePlaces == 3 || freePlaces == 1)
                     // move from left to left
-                    MoveSingleParticipant(currentSection, nextSection, false, false, false, elapsedDateTime);
+                    MoveSingleParticipant(currentSection, nextSection, Side.Left, Side.Left, false, elapsedDateTime);
                 else if (freePlaces == 2)
                     // move from left to right
-                    MoveSingleParticipant(currentSection, nextSection, false, true, false, elapsedDateTime);
+                    MoveSingleParticipant(currentSection, nextSection, Side.Left, Side.Right, false, elapsedDateTime);
                 #endregion
             }
             else if (currentSectionData.DistanceRight >= 100)
@@ -294,10 +318,10 @@ namespace Controller
                     currentSectionData.DistanceRight = 99;
                 else if (freePlaces == 3 || freePlaces == 2)
                     // move from right to right
-                    MoveSingleParticipant(currentSection, nextSection, true, true, false, elapsedDateTime);
+                    MoveSingleParticipant(currentSection, nextSection, Side.Right, Side.Right, false, elapsedDateTime);
                 else if (freePlaces == 1)
                     // move from right to left
-                    MoveSingleParticipant(currentSection, nextSection, true, false, false, elapsedDateTime);
+                    MoveSingleParticipant(currentSection, nextSection, Side.Right, Side.Left, false, elapsedDateTime);
                 #endregion
             }
         }
@@ -322,63 +346,76 @@ namespace Controller
             return returnval;
         }
 
-        private void MoveSingleParticipant(Section currentSection, Section nextSection, bool start, bool end, bool correctOtherSide, DateTime elapsedDateTime)
+        private void MoveSingleParticipant(Section currentSection, Section nextSection, Side start, Side end, bool correctOtherSide, DateTime elapsedDateTime)
         {
-            // TODO: Make an enum instead of bools.
-            // bools start and end represent left or right, left is false, right is true
             SectionData currentSectionData = GetSectionData(currentSection);
             SectionData nextSectionData = GetSectionData(nextSection);
-            if (start)
+            switch (start)
             {
-                // select right
-                if (end)
-                {
-                    // go to right
-                    nextSectionData.Right = currentSectionData.Right;
-                    nextSectionData.DistanceRight = currentSectionData.DistanceRight - 100;
-                }
-                else
-                {
-                    // go to left
-                    nextSectionData.Left = currentSectionData.Right;
-                    nextSectionData.DistanceLeft = currentSectionData.DistanceRight - 100;
-                }
-
-                currentSectionData.Right = null;
-                currentSectionData.DistanceRight = 0;
-
-
-                if (correctOtherSide)
-                {
-                    // correct distance of left side
-                    currentSectionData.DistanceLeft = 99;
-                }
+                case Side.Right:
+                    switch (end)
+                    {
+                        case Side.Right:
+                            nextSectionData.Right = currentSectionData.Right;
+                            nextSectionData.StartTimeRight = elapsedDateTime;
+                            nextSectionData.DistanceRight = currentSectionData.DistanceRight - 100;
+                            if (isFinishSection(nextSection))
+                                OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Right, elapsedDateTime);
+                            break;
+                        case Side.Left:
+                            nextSectionData.Left = currentSectionData.Right;
+                            nextSectionData.StartTimeLeft = elapsedDateTime;
+                            nextSectionData.DistanceLeft = currentSectionData.DistanceRight - 100;
+                            if (isFinishSection(nextSection))
+                                OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Left, elapsedDateTime);
+                            break;
+                    }
+                    // section time
+                    _participantSectionTimeStorage.AddToList(new ParticipantSectionTime()
+                    {
+                        Name = currentSectionData.Right.Name,
+                        Section = currentSection,
+                        Time = elapsedDateTime - currentSectionData.StartTimeRight
+                    });
+                    currentSectionData.Right = null;
+                    currentSectionData.DistanceRight = 0;
+                    break;
+                case Side.Left:
+                    switch (end)
+                    {
+                        case Side.Right:
+                            nextSectionData.Right = currentSectionData.Left;
+                            nextSectionData.StartTimeRight = elapsedDateTime;
+                            nextSectionData.DistanceRight = currentSectionData.DistanceLeft - 100;
+                            if (isFinishSection(nextSection))
+                                OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Right, elapsedDateTime);
+                            break;
+                        case Side.Left:
+                            nextSectionData.Left = currentSectionData.Left;
+                            nextSectionData.StartTimeLeft = elapsedDateTime;
+                            nextSectionData.DistanceLeft = currentSectionData.DistanceLeft - 100;
+                            if (isFinishSection(nextSection))
+                                OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Left, elapsedDateTime);
+                            break;
+                    }
+                    // section time
+                    _participantSectionTimeStorage.AddToList(new ParticipantSectionTime()
+                    {
+                        Name = currentSectionData.Left.Name,
+                        Section = currentSection,
+                        Time = elapsedDateTime - currentSectionData.StartTimeLeft
+                    });
+                    currentSectionData.Left = null;
+                    currentSectionData.DistanceLeft = 0;
+                    break;
             }
-            else
-            {
-                // select left
-                if (end)
-                {
-                    // go to right
-                    nextSectionData.Right = currentSectionData.Left;
-                    nextSectionData.DistanceRight = currentSectionData.DistanceLeft - 100;
-                }
-                else
-                {
-                    // go to left
-                    nextSectionData.Left = currentSectionData.Left;
-                    nextSectionData.DistanceLeft = currentSectionData.DistanceLeft - 100;
-                }
 
-                currentSectionData.Left = null;
-                currentSectionData.DistanceLeft = 0;
+            // correct other driver's distance if required. (this is needed when only one of two drivers can move)
+            if (start == Side.Right && correctOtherSide)
+                currentSectionData.DistanceLeft = 99;
+            else if (start == Side.Left && correctOtherSide)
+                currentSectionData.DistanceRight = 99;
 
-                if (correctOtherSide)
-                {
-                    // correct distance of right side
-                    currentSectionData.DistanceRight = 99;
-                }
-            }
         }
 
         public int GetDistanceParticipant(IParticipant participant)
@@ -401,33 +438,51 @@ namespace Controller
             return _lapsDriven[participant];
         }
 
-        private void UpdateLaps()
+        private void UpdateLap(IParticipant participant, DateTime elapsedDateTime)
         {
-            // check driver on finish section, if lap threshold is reached, pull em off section.
-            // TODO: Make this own method, this is doing 2 seperate things (not SOLID)
-            // TODO: Make finishing fair.
-            if (finishSectionData.Left != null && _lapsDriven[finishSectionData.Left] >= Laps)
+            _lapsDriven[participant]++;
+            // write lap time, update time
+            if (_lapsDriven[participant] > 0) // ignore lap count from -1 to 0
             {
-                _finishOrder.Add(finishSectionData.Left);
-                finishSectionData.Left = null;
+                _lapTimeStorage.AddToList(new ParticipantLapTime()
+                {
+                    Name = participant.Name,
+                    Lap = _lapsDriven[participant],
+                    Time = elapsedDateTime - _participantTimeEachLap[participant]
+                });
+                _participantTimeEachLap[participant] = elapsedDateTime;
             }
-            if (finishSectionData.Right != null && _lapsDriven[finishSectionData.Right] >= Laps)
-            {
-                _finishOrder.Add(finishSectionData.Right);
-                finishSectionData.Right = null;
-            }
+        }
 
-            // look for a driver on finish section, if driver is on finish, up its lap
-            // TODO: I'm noticing a DRY theme when I'm dealing with SectionData's Left and Right.
-            if (finishSectionData.Left != null && finishSectionData.Left != finishPreviousLeft)
+        private bool isFinished(IParticipant participant)
+        {
+            return _lapsDriven[participant] >= Laps;
+        }
+
+        private bool isFinishSection(Section section)
+        {
+            return section.SectionType == SectionTypes.Finish;
+        }
+
+        private void OnMoveUpdateLapsAndFinish(Section section, SectionData sectionData, Side side, DateTime elapsedDateTime)
+        {
+            if (side == Side.Right)
             {
-                _lapsDriven[finishSectionData.Left]++;
-                finishPreviousLeft = finishSectionData.Left;
+                UpdateLap(sectionData.Right, elapsedDateTime);
+                if (isFinished(sectionData.Right))
+                {
+                    _finishOrder.Add(sectionData.Right);
+                    sectionData.Right = null;
+                }
             }
-            if (finishSectionData.Right != null && finishSectionData.Right != finishPreviousRight)
+            else if (side == Side.Left)
             {
-                _lapsDriven[finishSectionData.Right]++;
-                finishPreviousRight = finishSectionData.Right;
+                UpdateLap(sectionData.Left, elapsedDateTime);
+                if (isFinished(sectionData.Left))
+                {
+                    _finishOrder.Add(sectionData.Left);
+                    sectionData.Left = null;
+                }
             }
         }
 
@@ -441,9 +496,15 @@ namespace Controller
             return _finishOrder;
         }
 
+        public TimeSpan GetRaceLength()
+        {
+            return EndTime - StartTime;
+        }
+
         public void Start()
         {
             StartTime = DateTime.Now;
+            InitializeParticipantTimeEachLap();
             _timer.Start();
         }
 
