@@ -122,13 +122,17 @@ namespace ConsoleEdition
             // just to be sure, reset cursorposition
             Console.SetCursorPosition(_cPosX, _cPosY);
             // for testing purposes, draw participants
-            printParticipants();
+            PrintParticipants();
+
+            // level 6.9, print best participants for section time and lap time.
+            PrintBestParticipants();
 
             foreach (Section trackSection in track.Sections)
             {
                 DrawSingleSection(trackSection);
             }
         }
+
 
 
         public static void DrawSingleSection(Section section)
@@ -228,7 +232,14 @@ namespace ConsoleEdition
             DrawTrack(e.Track);
         }
 
-        private static void printParticipants()
+        private static void PrintBestParticipants()
+        {
+            Console.SetCursorPosition(0, 40);
+            // padding is needed because name changes and console is not cleared constantly.
+            Console.WriteLine($"Best section time done by: {_currentRace.GetBestParticipantSectionTime().PadRight(10)}");
+            Console.WriteLine($"Best lap time done by:     {_currentRace.GetBestParticipantLapTime().PadRight(10)}");
+        }
+        private static void PrintParticipants()
         {
             // TODO: Remove debugging method
             Console.SetCursorPosition(0,1);

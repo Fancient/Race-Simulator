@@ -10,15 +10,17 @@ namespace Model
         public List<IParticipant> Participants { get; set; }
         public Queue<Track> Tracks { get; set; }
         public Storage<ParticipantPoints> PointsStorage { get; set; }
+        public Storage<ParticipantSpeed> SpeedStorage { get; set; }
 
-        public Storage<RaceLength> RaceLengthStorage { get; set; }
+        public List<RaceLength> RaceLengthStorage { get; set; }
         
         public Competition()
         {
             Participants = new List<IParticipant>();
             Tracks = new Queue<Track>();
             PointsStorage = new Storage<ParticipantPoints>();
-            RaceLengthStorage = new Storage<RaceLength>();
+            RaceLengthStorage = new List<RaceLength>();
+            SpeedStorage = new Storage<ParticipantSpeed>();
         }
 
         public Track NextTrack()
@@ -42,7 +44,15 @@ namespace Model
 
         public void StoreRaceLength(string name, TimeSpan time)
         { 
-            RaceLengthStorage.AddToList(new RaceLength(){Name = name, Time = time});
+            RaceLengthStorage.Add(new RaceLength(){TrackName = name, Time = time});
+        }
+
+        public void StoreParticipantsSpeed(List<ParticipantSpeed> psl)
+        {
+            foreach (ParticipantSpeed ps in psl)
+            {
+                SpeedStorage.AddToList(ps);
+            }
         }
     }
 }

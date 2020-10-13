@@ -12,5 +12,17 @@ namespace Model
         {
             value.Add(_list);
         }
+
+        public string BestParticipant()
+        {
+            if (_list.Count == 0)
+                return "";
+            return _list[0].BestParticipant(_list);
+        }
+
+        public List<T> GetList()
+        {
+            return _list;
+        }
     }
 }

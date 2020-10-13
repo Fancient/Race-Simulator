@@ -22,5 +22,21 @@ namespace Model
             }
             list.Add(this as T);
         }
+
+        public string BestParticipant<T>(List<T> list) where T : class, IStorageConstraint
+        {
+            ParticipantPoints bestParticipant = null;
+            foreach (var storageConstraint in list)
+            {
+                var currentParticipant = storageConstraint as ParticipantPoints;
+                if (bestParticipant == null) bestParticipant = currentParticipant;
+                if (currentParticipant.Points > bestParticipant.Points)
+                {
+                    bestParticipant = currentParticipant;
+                }
+            }
+
+            return bestParticipant.Name;
+        }
     }
 }

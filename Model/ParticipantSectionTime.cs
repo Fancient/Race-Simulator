@@ -21,8 +21,22 @@ namespace Model
                     pst.Time = Time;
                     return;
                 }
-                list.Add(this as T);
             }
+            list.Add(this as T);
+        }
+
+        public string BestParticipant<T>(List<T> list) where T : class, IStorageConstraint
+        {
+            ParticipantSectionTime bestTime = null;
+            foreach (T storageConstraint in list)
+            {
+                var currentTime = storageConstraint as ParticipantSectionTime;
+                if (bestTime == null) bestTime = currentTime; // first
+                if (currentTime.Time < bestTime.Time)
+                    bestTime = currentTime;
+            }
+
+            return bestTime.Name;
         }
     }
 }

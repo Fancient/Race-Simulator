@@ -139,6 +139,7 @@ namespace Controller
         {
             CompetitionData.DeterminePoints(CurrentRace.GetFinishOrderParticipants());
             CompetitionData.StoreRaceLength(CurrentRace.Track.Name, CurrentRace.GetRaceLength());
+            CompetitionData.StoreParticipantsSpeed(CurrentRace.GetParticipantSpeeds());
             NextRace();
         }
     }

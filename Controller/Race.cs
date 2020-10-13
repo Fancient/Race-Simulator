@@ -501,6 +501,31 @@ namespace Controller
             return EndTime - StartTime;
         }
 
+        public List<ParticipantSpeed> GetParticipantSpeeds()
+        {
+            List<ParticipantSpeed> list = new List<ParticipantSpeed>();
+            foreach (IParticipant participant in Participants)
+            {
+                list.Add(new ParticipantSpeed()
+                {
+                    Name = participant.Name,
+                    TrackName = Track.Name,
+                    Speed = GetSpeedFromParticipant(participant)
+                });
+            }
+            return list;
+        }
+
+        public string GetBestParticipantSectionTime()
+        {
+            return _participantSectionTimeStorage.BestParticipant();
+        }
+
+        public string GetBestParticipantLapTime()
+        {
+            return _lapTimeStorage.BestParticipant();
+        }
+
         public void Start()
         {
             StartTime = DateTime.Now;

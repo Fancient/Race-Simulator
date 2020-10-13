@@ -4,14 +4,9 @@ using System.Text;
 
 namespace Model
 {
-    public class RaceLength : IStorageConstraint
+    public class RaceLength
     {
-        public string Name { get; set; }
-        public void Add<T>(List<T> list) where T : class, IStorageConstraint
-        {
-            list.Add(this as T);
-        }
-
+        public string TrackName { get; set; }
         public TimeSpan Time { get; set; }
     }
 }
