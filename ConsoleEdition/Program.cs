@@ -1,22 +1,18 @@
-﻿using System;
+﻿using Controller;
+using System;
 using System.Threading;
-using Controller;
 
 namespace ConsoleEdition
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Data.Initialize();
-            Data.NextRace();
+            Console.SetWindowSize(180, 60);
 
-            Console.SetWindowSize(180,60);
-
-            Console.WriteLine($"Track: {Data.CurrentRace.Track.Name}");
-            
-            Visualization.Initialize(Data.CurrentRace);
-            Visualization.DrawTrack(Data.CurrentRace.Track);
+            Data.Initialize(); // initialize data (tracks and participants)
+            Data.VisualizationNextRaceEventHandler += Visualization.OnNextRaceNextRaceEvent; // tell data about visualization's next race method.
+            Data.NextRace(); // start first race
 
             // game loop
             for (; ; )

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Model
 {
@@ -11,5 +9,8 @@ namespace Model
         public IParticipant Right { get; set; }
         public int DistanceRight { get; set; }
 
+        public DateTime StartTimeLeft { get; set; }
+
+        public DateTime StartTimeRight { get; set; }
     }
 }

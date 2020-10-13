@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Model
 {
@@ -16,7 +14,6 @@ namespace Model
             // instantiate Sections LinkedList. Loop through SectionTypes[] parameter,
             // add new section of current section type to LinkedList.
             Sections = GenerateSections(sections);
-
         }
 
         public LinkedList<Section> GenerateSections(SectionTypes[] sectionTypes)
