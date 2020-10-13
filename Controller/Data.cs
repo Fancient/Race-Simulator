@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using Model;
+﻿using Model;
+using System;
 
 namespace Controller
 {
@@ -93,7 +90,7 @@ namespace Controller
                 SectionTypes.Straight
             }));
 
-            CompetitionData.Tracks.Enqueue(new Track("The Oval", new SectionTypes[] 
+            CompetitionData.Tracks.Enqueue(new Track("The Oval", new SectionTypes[]
             {
                 SectionTypes.StartGrid,
                 SectionTypes.StartGrid,
@@ -112,8 +109,6 @@ namespace Controller
                 SectionTypes.Straight,
                 SectionTypes.RightCorner
             }));
-
-            
         }
 
         public static void NextRace()
@@ -130,7 +125,7 @@ namespace Controller
             {
                 CurrentRace = new Race(currentTrack, CompetitionData.Participants);
                 CurrentRace.RaceFinished += OnRaceFinished;
-                VisualizationNextRaceEventHandler?.Invoke(null, new RaceStartEventArgs() { Race = CurrentRace});
+                VisualizationNextRaceEventHandler?.Invoke(null, new RaceStartEventArgs() { Race = CurrentRace });
                 CurrentRace.Start();
             }
         }

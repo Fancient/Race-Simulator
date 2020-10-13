@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Model
 {
@@ -13,7 +11,7 @@ namespace Model
         public Storage<ParticipantSpeed> SpeedStorage { get; set; }
 
         public List<RaceLength> RaceLengthStorage { get; set; }
-        
+
         public Competition()
         {
             Participants = new List<IParticipant>();
@@ -31,20 +29,20 @@ namespace Model
 
         public void DeterminePoints(List<IParticipant> finishOrder)
         {
-            int[] points = {15, 10, 8, 6, 4, 2 ,1 ,0};
+            int[] points = { 15, 10, 8, 6, 4, 2, 1, 0 };
             for (int i = 0; i < finishOrder.Count; i++)
             {
                 int pointIndex = i;
                 if (i >= finishOrder.Count)
                     pointIndex = finishOrder.Count - 1; // index out of bounds afhandelen.
 
-                PointsStorage.AddToList(new ParticipantPoints(){Name = finishOrder[i].Name, Points = points[pointIndex]});
+                PointsStorage.AddToList(new ParticipantPoints() { Name = finishOrder[i].Name, Points = points[pointIndex] });
             }
         }
 
         public void StoreRaceLength(string name, TimeSpan time)
-        { 
-            RaceLengthStorage.Add(new RaceLength(){TrackName = name, Time = time});
+        {
+            RaceLengthStorage.Add(new RaceLength() { TrackName = name, Time = time });
         }
 
         public void StoreParticipantsSpeed(List<ParticipantSpeed> psl)

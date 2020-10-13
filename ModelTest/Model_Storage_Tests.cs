@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NSubstitute;
-using NUnit.Framework;
-using Model;
+﻿using NUnit.Framework;
+using System;
 
 namespace Model.Test
 {
     [TestFixture]
-    class Model_Storage_Tests
+    internal class Model_Storage_Tests
     {
         [Test]
         public void Instantiation_IStorageConstraint_IsNotNull()
         {
             // arrange
-            
+
             // act
             var result = new Storage<IStorageConstraint>();
 
@@ -58,7 +54,7 @@ namespace Model.Test
             var result = storage.BestParticipant();
 
             // Assert
-            Assert.AreEqual(BestParticipantName,result);
+            Assert.AreEqual(BestParticipantName, result);
         }
 
         [Test]
@@ -68,7 +64,7 @@ namespace Model.Test
             var BestParticipantName = "best";
             var section1 = new Section(SectionTypes.Straight);
 
-            var part1 = new ParticipantSectionTime() { Name = "n1", Section = section1, Time = TimeSpan.FromSeconds(20)};
+            var part1 = new ParticipantSectionTime() { Name = "n1", Section = section1, Time = TimeSpan.FromSeconds(20) };
             var part2 = new ParticipantSectionTime() { Name = "n2", Section = section1, Time = TimeSpan.FromSeconds(17) };
             var part3 = new ParticipantSectionTime() { Name = "n3", Section = section1, Time = TimeSpan.FromSeconds(18) };
             var bestp = new ParticipantSectionTime() { Name = BestParticipantName, Section = section1, Time = TimeSpan.FromSeconds(10) };
@@ -141,7 +137,7 @@ namespace Model.Test
             var part2 = new ParticipantPoints() { Name = "A", Points = 8 };
 
             var storage = new Storage<ParticipantPoints>();
-            
+
             // Act
             storage.AddToList(part1);
             var points1 = storage.GetList()[0].Points;

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Model
 {
@@ -9,6 +7,7 @@ namespace Model
         public string Name { get; set; }
         public string TrackName { get; set; }
         public int Speed { get; set; }
+
         public void Add<T>(List<T> list) where T : class, IStorageConstraint
         {
             list.Add(this as T);

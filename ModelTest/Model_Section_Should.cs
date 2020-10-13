@@ -3,7 +3,7 @@
 namespace Model.Test
 {
     [TestFixture]
-    class Model_Section_Should
+    internal class Model_Section_Should
     {
         [Test]
         public void Section_Object_NotNull()

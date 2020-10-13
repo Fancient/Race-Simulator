@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Model;
 using NUnit.Framework;
-using Controller;
-using Model;
+using System.Collections.Generic;
 
 namespace Controller.Test
 {
     [TestFixture]
-    class Race_MovingParticipants
+    internal class Race_MovingParticipants
     {
         private Race race;
 
@@ -49,7 +46,6 @@ namespace Controller.Test
                     participant3,
                     participant4
                 });
-
         }
 
         [Test]
@@ -64,6 +60,7 @@ namespace Controller.Test
 
             Assert.True(true);
         }
+
         // TODO: Write unit tests for moving participants (which is hard)
     }
 }

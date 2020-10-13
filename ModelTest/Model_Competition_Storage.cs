@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit;
-using Model;
-using NSubstitute;
+﻿using NSubstitute;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace Model.Test
 {
     [TestFixture]
-    class Model_Competition_Storage
+    internal class Model_Competition_Storage
     {
         [Test]
         public void DeterminePoints_FinishOrder_ShouldDeterminePointsCorrectly()
@@ -30,7 +27,7 @@ namespace Model.Test
             // Assert
             Assert.That(competition.PointsStorage.GetList()[0].Points == 15 && competition.PointsStorage.GetList()[0].Name == "a");
             Assert.That(competition.PointsStorage.GetList()[1].Points == 10 && competition.PointsStorage.GetList()[1].Name == "b");
-            Assert.That(competition.PointsStorage.GetList()[2].Points == 8  && competition.PointsStorage.GetList()[2].Name == "c");
+            Assert.That(competition.PointsStorage.GetList()[2].Points == 8 && competition.PointsStorage.GetList()[2].Name == "c");
         }
 
         [Test]
@@ -38,8 +35,8 @@ namespace Model.Test
         {
             // Arrange
             var competition = new Competition();
-            var raceLength = new RaceLength() { Time = TimeSpan.FromSeconds(95), TrackName = "Track"};
-            
+            var raceLength = new RaceLength() { Time = TimeSpan.FromSeconds(95), TrackName = "Track" };
+
             // Act
             competition.StoreRaceLength(raceLength.TrackName, raceLength.Time);
 

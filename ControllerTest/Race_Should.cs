@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Model;
+﻿using Model;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
+using System.Collections.Generic;
 
 namespace Controller.Test
 {
     [TestFixture]
-    class Race_Should
+    internal class Race_Should
     {
         private Race race;
+
         // create own set of participants and tracks
         private List<IParticipant> participants;
+
         private IEquipment equipment;
         private Track track;
 
@@ -38,8 +38,8 @@ namespace Controller.Test
             });
 
             participants = new List<IParticipant>();
-            equipment = new Car(0,0,0,false);
-            participants.Add(new Driver("a",0, equipment, TeamColors.Blue));
+            equipment = new Car(0, 0, 0, false);
+            participants.Add(new Driver("a", 0, equipment, TeamColors.Blue));
             participants.Add(new Driver("b", 0, equipment, TeamColors.Blue));
             participants.Add(new Driver("c", 0, equipment, TeamColors.Blue));
             participants.Add(new Driver("d", 0, equipment, TeamColors.Blue));
@@ -70,7 +70,7 @@ namespace Controller.Test
         {
             // we will check if equipment of a single participant has changed,
             // since all participants have the same equipment in setup
-            
+
             // get baseline equipment values
             int originalQuality = equipment.Quality;
             int originalPerformance = equipment.Performance;
@@ -116,7 +116,7 @@ namespace Controller.Test
         {
             Section section = new Section(SectionTypes.StartGrid);
             IParticipant participant = new Driver("a", 0, equipment, TeamColors.Blue);
-            
+
             race.PlaceParticipant(participant, false, section);
             var result = race.GetSectionData(section).Left;
 

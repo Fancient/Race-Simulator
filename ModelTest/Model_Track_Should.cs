@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 
 namespace Model.Test
 {
     [TestFixture]
-    class Model_Track_Should
+    internal class Model_Track_Should
     {
         private string _name = "a name";
         private SectionTypes[] _sections;
@@ -48,7 +48,5 @@ namespace Model.Test
 
             Assert.AreEqual(_sections, resultSectionTypes);
         }
-
-
     }
 }

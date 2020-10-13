@@ -3,32 +3,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Timers;
 
 [assembly: InternalsVisibleTo("Controller.Test")]
 
 namespace Controller
 {
-    enum Side
+    internal enum Side
     {
-        Left, 
+        Left,
         Right
     }
+
     public class Race
     {
         public Track Track { get; set; }
         public List<IParticipant> Participants { get; set; }
         public DateTime StartTime { get; set; }
-        
+
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
         private Timer _timer;
         private const int timerInterval = 200;
 
-
         // keeping track of laps
         private const int Laps = 4;
+
         private Dictionary<IParticipant, int> _lapsDriven;
         private SectionData finishSectionData;
 
@@ -40,13 +40,14 @@ namespace Controller
 
         // lap times
         private Dictionary<IParticipant, DateTime> _participantTimeEachLap;
+
         private Storage<ParticipantLapTime> _lapTimeStorage;
 
         // Race Length
         private DateTime EndTime;
 
         // event for drivers changed positions
-        public event EventHandler<DriversChangedEventArgs> DriversChanged; 
+        public event EventHandler<DriversChangedEventArgs> DriversChanged;
 
         // event for race finish
         public event EventHandler RaceFinished;
@@ -136,7 +137,6 @@ namespace Controller
                 if (i % 2 == 1)
                     currentStartGridIndex++;
             }
-
         }
 
         public List<Section> GetStartGrids()
@@ -149,7 +149,7 @@ namespace Controller
                 if (trackSection.SectionType == SectionTypes.StartGrid)
                     startGridSections.Add(trackSection);
             }
-            
+
             // reverse list
             startGridSections.Reverse();
 
@@ -172,12 +172,11 @@ namespace Controller
             // randomize IsBroken for pariticpants
             RandomEquipmentBreaking();
 
-
             // call method to change driverPositions.
             MoveParticipants(e.SignalTime);
 
             // raise driversChanged event.
-            DriversChanged?.Invoke(this, new DriversChangedEventArgs(){Track = this.Track});
+            DriversChanged?.Invoke(this, new DriversChangedEventArgs() { Track = this.Track });
 
             // check if any participants on track, if not, race is finished.
             if (CheckRaceFinished())
@@ -211,7 +210,7 @@ namespace Controller
                 {
                     participant.Equipment.IsBroken = false;
                     // downgrade quality of equipment by 1, assure proper bounds
-                    if(participant.Equipment.Quality > 1)
+                    if (participant.Equipment.Quality > 1)
                         participant.Equipment.Quality--;
                     // downgrade base speed of equipment by 1, assure proper bounds;
                     if (participant.Equipment.Speed > 5)
@@ -252,7 +251,6 @@ namespace Controller
                 currentSectionData.DistanceRight += GetSpeedFromParticipant(currentSectionData.Right);
             }
 
-
             // TODO: maak methodes voor verplaatsen: leftToLeft, leftToRight, rightToRight, rightToRight. parameters: 2 sectiondata, bool correctOtherDriver.
             if (currentSectionData.DistanceLeft >= 100 && currentSectionData.DistanceRight >= 100)
             {
@@ -292,11 +290,12 @@ namespace Controller
                     }
                 }
 
-                #endregion
+                #endregion Both drivers ready to move
             }
             else if (currentSectionData.DistanceLeft >= 100)
             {
                 #region Left driver ready to move
+
                 // for freesections, prefer same spot, otherwise take other
                 int freePlaces = FreePlacesLeftOnSectionData(nextSectionData);
                 if (freePlaces == 0)
@@ -307,11 +306,13 @@ namespace Controller
                 else if (freePlaces == 2)
                     // move from left to right
                     MoveSingleParticipant(currentSection, nextSection, Side.Left, Side.Right, false, elapsedDateTime);
-                #endregion
+
+                #endregion Left driver ready to move
             }
             else if (currentSectionData.DistanceRight >= 100)
             {
                 #region Right driver ready to move
+
                 // for freesections, prefer same spot, otherwise take other
                 int freePlaces = FreePlacesLeftOnSectionData(nextSectionData);
                 if (freePlaces == 0)
@@ -322,7 +323,8 @@ namespace Controller
                 else if (freePlaces == 1)
                     // move from right to left
                     MoveSingleParticipant(currentSection, nextSection, Side.Right, Side.Left, false, elapsedDateTime);
-                #endregion
+
+                #endregion Right driver ready to move
             }
         }
 
@@ -362,6 +364,7 @@ namespace Controller
                             if (isFinishSection(nextSection))
                                 OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Right, elapsedDateTime);
                             break;
+
                         case Side.Left:
                             nextSectionData.Left = currentSectionData.Right;
                             nextSectionData.StartTimeLeft = elapsedDateTime;
@@ -380,6 +383,7 @@ namespace Controller
                     currentSectionData.Right = null;
                     currentSectionData.DistanceRight = 0;
                     break;
+
                 case Side.Left:
                     switch (end)
                     {
@@ -390,6 +394,7 @@ namespace Controller
                             if (isFinishSection(nextSection))
                                 OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Right, elapsedDateTime);
                             break;
+
                         case Side.Left:
                             nextSectionData.Left = currentSectionData.Left;
                             nextSectionData.StartTimeLeft = elapsedDateTime;
@@ -415,7 +420,6 @@ namespace Controller
                 currentSectionData.DistanceLeft = 99;
             else if (start == Side.Left && correctOtherSide)
                 currentSectionData.DistanceRight = 99;
-
         }
 
         public int GetDistanceParticipant(IParticipant participant)

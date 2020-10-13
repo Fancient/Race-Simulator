@@ -3,7 +3,7 @@
 namespace Model.Test
 {
     [TestFixture]
-    class Model_Competition_NextTrackShould
+    internal class Model_Competition_NextTrackShould
     {
         private Competition _competition;
 

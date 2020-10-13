@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Controller;
+﻿using Controller;
 using Model;
+using System;
 
 namespace ConsoleEdition
 {
@@ -13,10 +11,11 @@ namespace ConsoleEdition
         S,
         W
     }
+
     public static class Visualization
     {
-        private const int _cursorStartPosX = 24;
-        private const int _cursorStartPosY = 16;
+        private const int CursorStartPosX = 24;
+        private const int CursorStartPosY = 16;
 
         private static int _cPosX;
         private static int _cPosY;
@@ -27,6 +26,7 @@ namespace ConsoleEdition
         private static Direction _currentDirection;
 
         #region graphics
+
         private static string[] _finishHorizontal = { "----", " 1# ", "2 # ", "----" };
         private static string[] _startGridHorizontal = { "----", " 1] ", "2]  ", "----" };
 
@@ -34,6 +34,7 @@ namespace ConsoleEdition
         private static string[] _straightVertical = { "|  |", "|2 |", "| 1|", "|  |" };
 
         private static string[] _cornerNE = { " /--", "/1  ", "| 2 ", "|  /" };
+
         private static string[] _cornerNW =
         {
             @"--\ ",
@@ -41,6 +42,7 @@ namespace ConsoleEdition
             @" 2 |",
             @"\  |"
         };
+
         private static string[] _cornerSE =
         {
             @"|  \",
@@ -48,14 +50,16 @@ namespace ConsoleEdition
             @"\2  ",
             @" \--"
         };
+
         private static string[] _cornerSW =
         {
-            "/  |", 
+            "/  |",
             " 1 |",
             "  2/",
             "--/ "
         };
-        #endregion
+
+        #endregion graphics
 
         public static string[] SectionTypeToGraphic(SectionTypes sectionType, Direction direction)
         {
@@ -117,8 +121,8 @@ namespace ConsoleEdition
 
         public static void DrawTrack(Track track)
         {
-            _cPosX = _cursorStartPosX;
-            _cPosY = _cursorStartPosY;
+            _cPosX = CursorStartPosX;
+            _cPosY = CursorStartPosY;
             // just to be sure, reset cursorposition
             Console.SetCursorPosition(_cPosX, _cPosY);
             // for testing purposes, draw participants
@@ -132,8 +136,6 @@ namespace ConsoleEdition
                 DrawSingleSection(trackSection);
             }
         }
-
-
 
         public static void DrawSingleSection(Section section)
         {
@@ -160,7 +162,6 @@ namespace ConsoleEdition
 
             // change cursor position based on current.
             ChangeCursorToNextPosition();
-
         }
 
         public static Direction ChangeDirectionLeft(Direction d)
@@ -195,12 +196,15 @@ namespace ConsoleEdition
                 case Direction.N:
                     _cPosY -= 4;
                     break;
+
                 case Direction.E:
                     _cPosX += 4;
                     break;
+
                 case Direction.S:
                     _cPosY += 4;
                     break;
+
                 case Direction.W:
                     _cPosX -= 4;
                     break;
@@ -212,7 +216,6 @@ namespace ConsoleEdition
             // create returnStrings array
             string[] returnStrings = new string[inputStrings.Length];
 
-             
             // gather letters from Participants, letter will be a whitespace when participant is null;
             string lP = leftParticipant == null ? " " : leftParticipant.Equipment.IsBroken ? "X" : leftParticipant.Name.Substring(0, 1).ToUpper();
             string rP = rightParticipant == null ? " " : rightParticipant.Equipment.IsBroken ? "X" : rightParticipant.Name.Substring(0, 1).ToUpper();
@@ -239,13 +242,13 @@ namespace ConsoleEdition
             Console.WriteLine($"Best section time done by: {_currentRace.GetBestParticipantSectionTime().PadRight(10)}");
             Console.WriteLine($"Best lap time done by:     {_currentRace.GetBestParticipantLapTime().PadRight(10)}");
         }
+
         private static void PrintParticipants()
         {
             // TODO: Remove debugging method
-            Console.SetCursorPosition(0,1);
+            Console.SetCursorPosition(0, 1);
             foreach (IParticipant participant in _currentRace.Participants)
             {
-                
                 Console.WriteLine($"{(participant.Name + ":").PadRight(7)} Speed: {participant.Equipment.Speed.ToString().PadRight(3)} Performance: {participant.Equipment.Performance.ToString().PadRight(3)} Quality: {participant.Equipment.Quality.ToString().PadRight(3)} Actual speed {_currentRace.GetSpeedFromParticipant(participant).ToString().PadRight(3)} Distance: {_currentRace.GetDistanceParticipant(participant).ToString().PadRight(3)} Laps:{_currentRace.GetLapsParticipant(participant).ToString().PadLeft(2)} broken: {participant.Equipment.IsBroken.ToString().PadRight(5)}");
             }
         }
