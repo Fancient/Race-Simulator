@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resource\Corner.png" />
+    <None Remove="Resource\Finish.png" />
+    <None Remove="Resource\StartGrid.png" />
+    <None Remove="Resource\Straight.png" />
+    <None Remove="Resource\TeamBlue.png" />
+    <None Remove="Resource\TeamGreen.png" />
+    <None Remove="Resource\TeamOrange.png" />
+    <None Remove="Resource\TeamPink.png" />
+    <None Remove="Resource\TeamRed.png" />
+    <None Remove="Resource\TeamYellow.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resource\Corner.png" />
+    <Content Include="Resource\Finish.png" />
+    <Content Include="Resource\StartGrid.png" />
+    <Content Include="Resource\Straight.png" />
+    <Content Include="Resource\TeamBlue.png" />
+    <Content Include="Resource\TeamGreen.png" />
+    <Content Include="Resource\TeamOrange.png" />
+    <Content Include="Resource\TeamPink.png" />
+    <Content Include="Resource\TeamRed.png" />
+    <Content Include="Resource\TeamYellow.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Controller\Controller.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+
+</Project>
