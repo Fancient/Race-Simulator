@@ -1,0 +1,172 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resource\Cars\E\TeamBlue.png" />
+    <None Remove="Resource\Cars\E\TeamGreen.png" />
+    <None Remove="Resource\Cars\E\TeamOrange.png" />
+    <None Remove="Resource\Cars\E\TeamPink.png" />
+    <None Remove="Resource\Cars\E\TeamRed.png" />
+    <None Remove="Resource\Cars\E\TeamYellow.png" />
+    <None Remove="Resource\Cars\N\TeamBlue.png" />
+    <None Remove="Resource\Cars\N\TeamGreen.png" />
+    <None Remove="Resource\Cars\N\TeamOrange.png" />
+    <None Remove="Resource\Cars\N\TeamPink.png" />
+    <None Remove="Resource\Cars\N\TeamRed.png" />
+    <None Remove="Resource\Cars\N\TeamYellow.png" />
+    <None Remove="Resource\Cars\S\TeamBlue.png" />
+    <None Remove="Resource\Cars\S\TeamGreen.png" />
+    <None Remove="Resource\Cars\S\TeamOrange.png" />
+    <None Remove="Resource\Cars\S\TeamPink.png" />
+    <None Remove="Resource\Cars\S\TeamRed.png" />
+    <None Remove="Resource\Cars\S\TeamYellow.png" />
+    <None Remove="Resource\Cars\W\TeamBlue.png" />
+    <None Remove="Resource\Cars\W\TeamGreen.png" />
+    <None Remove="Resource\Cars\W\TeamOrange.png" />
+    <None Remove="Resource\Cars\W\TeamPink.png" />
+    <None Remove="Resource\Cars\W\TeamRed.png" />
+    <None Remove="Resource\Cars\W\TeamYellow.png" />
+    <None Remove="Resource\Corner.png" />
+    <None Remove="Resource\CornerNE.png" />
+    <None Remove="Resource\CornerNW.png" />
+    <None Remove="Resource\CornerSE.png" />
+    <None Remove="Resource\CornerSW.png" />
+    <None Remove="Resource\Finish.png" />
+    <None Remove="Resource\StartGrid.png" />
+    <None Remove="Resource\StraightHorizontal.png" />
+    <None Remove="Resource\StraightVertical.png" />
+    <None Remove="Resource\Straight_Horizontal.png" />
+    <None Remove="Resource\TeamBlue.png" />
+    <None Remove="Resource\TeamGreen.png" />
+    <None Remove="Resource\TeamOrange.png" />
+    <None Remove="Resource\TeamPink.png" />
+    <None Remove="Resource\TeamRed.png" />
+    <None Remove="Resource\TeamYellow.png" />
+    <None Remove="Resource\TrackPieces\CornerNE.png" />
+    <None Remove="Resource\TrackPieces\CornerNW.png" />
+    <None Remove="Resource\TrackPieces\CornerSE.png" />
+    <None Remove="Resource\TrackPieces\CornerSW.png" />
+    <None Remove="Resource\TrackPieces\Finish.png" />
+    <None Remove="Resource\TrackPieces\StartGrid.png" />
+    <None Remove="Resource\TrackPieces\StraightHorizontal.png" />
+    <None Remove="Resource\TrackPieces\StraightVertical.png" />
+    <None Remove="Resource\X.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resource\Cars\E\TeamBlue.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\E\TeamGreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\E\TeamOrange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\E\TeamPink.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\E\TeamRed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\E\TeamYellow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\N\TeamBlue.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\N\TeamGreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\N\TeamOrange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\N\TeamPink.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\N\TeamRed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\N\TeamYellow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\S\TeamBlue.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\S\TeamGreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\S\TeamOrange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\S\TeamPink.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\S\TeamRed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\S\TeamYellow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\W\TeamBlue.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\W\TeamGreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\W\TeamOrange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\W\TeamPink.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\W\TeamRed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\Cars\W\TeamYellow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\TrackPieces\CornerNE.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\TrackPieces\CornerNW.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\TrackPieces\CornerSE.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\TrackPieces\CornerSW.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\TrackPieces\Finish.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\TrackPieces\StartGrid.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\TrackPieces\StraightHorizontal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\TrackPieces\StraightVertical.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\X.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Controller\Controller.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+
+</Project>

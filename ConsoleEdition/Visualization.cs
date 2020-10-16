@@ -93,7 +93,7 @@ namespace ConsoleEdition
             };
         }
 
-        public static void OnNextRaceNextRaceEvent(object sender, RaceStartEventArgs e)
+        public static void OnNextRaceEvent(object sender, RaceStartEventArgs e)
         {
             // reinitialize
             Initialize(e.Race);
@@ -164,6 +164,7 @@ namespace ConsoleEdition
             ChangeCursorToNextPosition();
         }
 
+        // TODO: Change direction method with clever % method
         public static Direction ChangeDirectionLeft(Direction d)
         {
             return d switch

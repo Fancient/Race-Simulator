@@ -9,7 +9,7 @@ namespace Controller
 
         public static Race CurrentRace { get; set; }
 
-        public static event EventHandler<RaceStartEventArgs> VisualizationNextRaceEventHandler;
+        public static event EventHandler<RaceStartEventArgs> NextRaceEventHandler;
 
         public static void Initialize()
         {
@@ -23,9 +23,9 @@ namespace Controller
             CompetitionData.Participants.Add(new Driver("Jaap", 0, new Car(8, 10, 16, false), TeamColors.Red));
             CompetitionData.Participants.Add(new Driver("Sjaak", 0, new Car(12, 10, 20, false), TeamColors.Green));
             CompetitionData.Participants.Add(new Driver("Manus", 0, new Car(20, 10, 18, false), TeamColors.Blue));
-            CompetitionData.Participants.Add(new Driver("Arie", 0, new Car(14, 10, 20, false), TeamColors.Red));
-            CompetitionData.Participants.Add(new Driver("Lars", 0, new Car(20, 10, 24, false), TeamColors.Green));
-            CompetitionData.Participants.Add(new Driver("Elsa", 0, new Car(16, 10, 30, false), TeamColors.Blue));
+            CompetitionData.Participants.Add(new Driver("Arie", 0, new Car(14, 10, 20, false), TeamColors.Orange));
+            CompetitionData.Participants.Add(new Driver("Lars", 0, new Car(20, 10, 24, false), TeamColors.Yellow));
+            CompetitionData.Participants.Add(new Driver("Elsa", 0, new Car(16, 10, 30, false), TeamColors.Pink));
         }
 
         public static void addTracks()
@@ -125,7 +125,7 @@ namespace Controller
             {
                 CurrentRace = new Race(currentTrack, CompetitionData.Participants);
                 CurrentRace.RaceFinished += OnRaceFinished;
-                VisualizationNextRaceEventHandler?.Invoke(null, new RaceStartEventArgs() { Race = CurrentRace });
+                NextRaceEventHandler?.Invoke(null, new RaceStartEventArgs() { Race = CurrentRace });
                 CurrentRace.Start();
             }
         }

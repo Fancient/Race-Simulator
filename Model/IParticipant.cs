@@ -5,8 +5,9 @@
         Red,
         Green,
         Yellow,
-        Grey,
-        Blue
+        Orange,
+        Blue,
+        Pink
     }
 
     public interface IParticipant
