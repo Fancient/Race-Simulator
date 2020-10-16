@@ -7,6 +7,15 @@
         mc:Ignorable="d"
         Title="Race Simulator" Height="900" Width="1400">
     <Grid Background="SlateGray">
+        <DockPanel LastChildFill="False" Height="20" VerticalAlignment="Top">
+            <Menu DockPanel.Dock="Top" Height="20" VerticalAlignment="Top">
+                <MenuItem Header="Menu">
+                    <MenuItem Header="Open Race Statistics"/>
+                    <MenuItem Header="Open Competition Statistics"/>
+                    <MenuItem Header="Close Application"/>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
         <Image x:Name="TrackScreen" Margin="50,50,400,200"/>
 
     </Grid>
