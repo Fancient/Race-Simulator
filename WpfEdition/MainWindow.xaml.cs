@@ -24,6 +24,9 @@ namespace WpfEdition
     /// </summary>
     public partial class MainWindow : Window
     {
+        private CompetitionStatistics _competitionStatistics;
+        private CurrentRaceStatistics _currentRaceStatistics;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -54,6 +57,29 @@ namespace WpfEdition
                     this.TrackScreen.Source = Visualization.DrawTrack(e.Track);
                     Trace.WriteLine($"Track ({e.Track.Name}) drawn");
                 }));
+        }
+
+        private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void MenuItem_OpenCurrentRaceStatistics_Click(object sender, RoutedEventArgs e)
+        {
+            // initialize window
+            _currentRaceStatistics = new CurrentRaceStatistics();
+
+            // show window
+            _currentRaceStatistics.Show();
+        }
+
+        private void MenuItem_OpenCompetitionStatistics_Click(object sender, RoutedEventArgs e)
+        {
+            // initialize window
+            _competitionStatistics = new CompetitionStatistics();
+
+            // show window
+            _competitionStatistics.Show();
         }
     }
 }
