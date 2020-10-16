@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Race Simulator" Height="900" Width="1400">
     <Grid Background="SlateGray">
-        <Image Margin="50,50,400,200"/>
+        <Image x:Name="TrackScreen" Margin="50,50,400,200"/>
 
     </Grid>
 </Window>

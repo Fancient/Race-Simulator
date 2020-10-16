@@ -11,7 +11,7 @@ namespace ConsoleEdition
             Console.SetWindowSize(180, 60);
 
             Data.Initialize(); // initialize data (tracks and participants)
-            Data.VisualizationNextRaceEventHandler += Visualization.OnNextRaceNextRaceEvent; // tell data about visualization's next race method.
+            Data.NextRaceEventHandler += Visualization.OnNextRaceEvent; // tell data about visualization's next race method.
             Data.NextRace(); // start first race
 
             // game loop
