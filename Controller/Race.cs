@@ -24,7 +24,7 @@ namespace Controller
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
         private Timer _timer;
-        private const int timerInterval = 200;
+        private const int timerInterval = 20;
 
         // keeping track of laps
         private const int Laps = 4;

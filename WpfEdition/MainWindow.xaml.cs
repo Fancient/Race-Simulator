@@ -45,6 +45,10 @@ namespace WpfEdition
 
             // link event
             e.Race.DriversChanged += OnDriversChanged;
+            this.Dispatcher.Invoke(() =>
+            {
+                e.Race.DriversChanged += ((MainDataContext) this.DataContext).OnDriversChanged;
+            });
         }
 
         private void OnDriversChanged(object sender, DriversChangedEventArgs e)

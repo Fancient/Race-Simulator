@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace Model
 {
@@ -9,18 +6,11 @@ namespace Model
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainDataContext(EventHandler<DriversChangedEventArgs> DriversChangedEventHandler)
-        {
-            DriversChangedEventHandler += OnDriversChanged;
-        }
-
-        public MainDataContext()
-        {
-
-        }
+        public string TrackName { get; set; }
 
         public void OnDriversChanged(object sender, DriversChangedEventArgs e)
         {
+            TrackName = e.Track.Name;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
     }
