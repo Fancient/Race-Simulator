@@ -45,6 +45,8 @@ namespace WpfEdition
 
             // link event
             e.Race.DriversChanged += OnDriversChanged;
+
+            // Dispatcher is needed for execution of OnDriversChanged. Otherwise thread exceptions will occur.
             this.Dispatcher.Invoke(() =>
             {
                 e.Race.DriversChanged += ((MainDataContext) this.DataContext).OnDriversChanged;
