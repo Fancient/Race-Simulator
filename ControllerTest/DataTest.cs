@@ -14,7 +14,7 @@ namespace Controller.Test
         [Test]
         public void TestCompetitionNotNull()
         {
-            Assert.IsNotNull(Data.CompetitionData, "Competition Property is Null.");
+            Assert.IsNotNull(Data.Competition, "Competition Property is Null.");
         }
     }
 }
