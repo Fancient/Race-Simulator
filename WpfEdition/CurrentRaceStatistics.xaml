@@ -5,8 +5,85 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfEdition"
         mc:Ignorable="d"
-        Title="CurrentRaceStatistics" Height="450" Width="800">
+        Title="CurrentRaceStatistics" Height="1000" Width="500">
+    <Window.DataContext>
+        <local:RaceStatisticsDataContext/>
+    </Window.DataContext>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" FontWeight="Bold" FontSize="16">Track:</Label>
+            <Label Grid.Row="0" Grid.Column="1" FontSize="16" Content="{Binding CurrentRace.Track.Name}"></Label>
+            <Label Grid.Row="1" Grid.Column="0" FontWeight="Bold" FontSize="16">Best Section Time:</Label>
+            <Label Grid.Row="1" Grid.Column="1" FontSize="16" Content="{Binding BestSectionTime}"></Label>
+            <Label Grid.Row="2" Grid.Column="0" FontWeight="Bold" FontSize="16">Best Lap Time:</Label>
+            <Label Grid.Row="2" Grid.Column="1" FontSize="16" Content="{Binding BestLapTime}"></Label>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label>Drivers:</Label>
+            <ListView Name="DriversListView" Grid.Row="1" ItemsSource="{Binding Participants}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
+                        <GridViewColumn Header="Team" DisplayMemberBinding="{Binding TeamColor}"></GridViewColumn>
+                        <GridViewColumn Header="Speed" DisplayMemberBinding="{Binding Equipment.Speed}"/>
+                        <GridViewColumn Header="Performance" DisplayMemberBinding="{Binding Equipment.Performance}"/>
+                        <GridViewColumn Header="Quality" DisplayMemberBinding="{Binding Equipment.Quality}"/>
+                        <GridViewColumn Header="IsBroken" DisplayMemberBinding="{Binding Equipment.IsBroken}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label>Lap Times:</Label>
+            <ListView Name="LapTimesListView" ItemsSource="{Binding LapTimes}" Grid.Row="1">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Lap" Width="50" DisplayMemberBinding="{Binding Lap}" />
+                        <GridViewColumn Header="Time" Width="200" DisplayMemberBinding="{Binding Time}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label>Section Times:</Label>
+            <ListView Name="SectionTimesListView" ItemsSource="{Binding SectionTimes}" Grid.Row="3">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Section" Width="150" DisplayMemberBinding="{Binding Section}" />
+                        <GridViewColumn Header="Time" Width="180" DisplayMemberBinding="{Binding Time}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
     </Grid>
 </Window>

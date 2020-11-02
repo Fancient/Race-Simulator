@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfEdition"
         xmlns:Model="clr-namespace:Model;assembly=Model" x:Class="WpfEdition.MainWindow"
         mc:Ignorable="d"
-        Title="Race Simulator" Height="900" Width="1400">
+        Title="Race Simulator" Height="900" Width="1400" Closed="Window_Closed">
     <Window.DataContext>
         <Model:MainDataContext/>
     </Window.DataContext>
@@ -20,8 +20,8 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <Image x:Name="TrackScreen" Margin="50,50,400,200"/>
-        <Label HorizontalAlignment="Left" Margin="1082,105,0,0" VerticalAlignment="Top" Content="{Binding TrackName}"/>
+        <Image x:Name="TrackScreen" Margin="20,80,80,80" HorizontalAlignment="Left"/>
+        <Label HorizontalAlignment="Left" Margin="20,40,0,0" VerticalAlignment="Top" Content="{Binding TrackName}" FontSize="24" FontWeight="Bold"/>
 
     </Grid>
 </Window>

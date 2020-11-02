@@ -112,7 +112,7 @@ namespace WpfEdition
             foreach (Section section in track.Sections)
             {
                 // draw the section
-                DrawSingleSection(xPos, yPos, ref currentDirection, g, section);
+                DrawSingleSection(xPos, yPos, currentDirection, g, section);
 
                 // determine direction for sectionType
                 currentDirection = DetermineDirectionForSectionType(currentDirection, section.SectionType);
@@ -267,7 +267,7 @@ namespace WpfEdition
         /// <param name="direction">current direction</param>
         /// <param name="g">Graphics object that will be used to draw on</param>
         /// <param name="section">current Section object</param>
-        private static void DrawSingleSection(int xPos, int yPos, ref Direction direction, Graphics g, Section section)
+        private static void DrawSingleSection(int xPos, int yPos, Direction direction, Graphics g, Section section)
         {
             Bitmap sectionBitmap = ImageCache.GetBitmap(SectionTypeToFilename(section.SectionType, direction)); // get section from cache
             g.DrawImage(sectionBitmap, xPos, yPos, SectionDimension, SectionDimension); // draw the image
@@ -324,7 +324,6 @@ namespace WpfEdition
         /// <returns>Width and Height in pixels, Tuple start position in pixels</returns>
         private static (int width, int height, (int x, int y)) GetTrackSize(Track track)
         {
-            const int sectionSize = 256; // size of image.
             int startX = 10, startY = 10; // start at 10, 10. This way we can determine min and max positions
             int curX = startX, curY = startY;
             List<int> positionsX = new List<int>();
@@ -361,12 +360,12 @@ namespace WpfEdition
             int maxY = positionsY.Max() + 1; // give enough room for drawing method
 
             // determine size
-            int width = (maxX - minX) * sectionSize;
-            int height = (maxY - minY) * sectionSize;
+            int width = (maxX - minX) * SectionDimension;
+            int height = (maxY - minY) * SectionDimension;
 
             // determine startposition
-            int x = (startX - minX) * sectionSize;
-            int y = (startY - minY) * sectionSize;
+            int x = (startX - minX) * SectionDimension;
+            int y = (startY - minY) * SectionDimension;
 
             return (width, height, (x, y));
         }

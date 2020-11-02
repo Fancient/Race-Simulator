@@ -9,7 +9,7 @@ namespace Controller
 
         public static Race CurrentRace { get; set; }
 
-        public static event EventHandler<RaceStartEventArgs> NextRaceEventHandler;
+        public static event EventHandler<NextRaceEventArgs> NextRaceEvent;
 
         public static void Initialize()
         {
@@ -114,10 +114,7 @@ namespace Controller
         public static void NextRace()
         {
             // cleanup previous race
-            if (CurrentRace != null) // this is because first time there is no previous race to clean up
-            {
-                CurrentRace.CleanUp();
-            }
+            CurrentRace?.CleanUp();
 
             // get next track from competitionData, then perform null check. when not null create a new race.
             Track currentTrack = CompetitionData.NextTrack();
@@ -125,7 +122,7 @@ namespace Controller
             {
                 CurrentRace = new Race(currentTrack, CompetitionData.Participants);
                 CurrentRace.RaceFinished += OnRaceFinished;
-                NextRaceEventHandler?.Invoke(null, new RaceStartEventArgs() { Race = CurrentRace });
+                NextRaceEvent?.Invoke(null, new NextRaceEventArgs() { Race = CurrentRace });
                 CurrentRace.Start();
             }
         }

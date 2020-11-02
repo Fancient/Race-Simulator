@@ -33,11 +33,11 @@ namespace WpfEdition
             // Start of application
             ImageCache.Initialize();
             Data.Initialize();
-            Data.NextRaceEventHandler += OnNextRaceEvent; // tell data about visualization event.
+            Data.NextRaceEvent += OnNextRaceEvent; // tell data about visualization event.
             Data.NextRace(); // start first race
         }
 
-        private void OnNextRaceEvent(object sender, RaceStartEventArgs e)
+        private void OnNextRaceEvent(object sender, NextRaceEventArgs e)
         {
             // reinitialize
             ImageCache.ClearCache();
@@ -75,6 +75,12 @@ namespace WpfEdition
             // initialize window
             _currentRaceStatistics = new CurrentRaceStatistics();
 
+            // link next race event
+            Data.NextRaceEvent += ((RaceStatisticsDataContext) _currentRaceStatistics.DataContext).OnNextRace;
+
+            // send current race to data context to show data mid race
+            ((RaceStatisticsDataContext)_currentRaceStatistics.DataContext).OnNextRace(null, new NextRaceEventArgs(){Race = Data.CurrentRace});
+
             // show window
             _currentRaceStatistics.Show();
         }
@@ -86,6 +92,11 @@ namespace WpfEdition
 
             // show window
             _competitionStatistics.Show();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
