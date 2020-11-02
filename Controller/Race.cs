@@ -108,7 +108,7 @@ namespace Controller
             foreach (IParticipant participant in Participants)
             {
                 participant.Equipment.Performance = _random.Next(5, 16); //  5 <= performance <= 15
-                participant.Equipment.Quality = _random.Next(5, 21); // quality can be 1-20, but i don't generate really awful equipment
+                participant.Equipment.Quality = _random.Next(8, 21); // quality can be 1-20, but i don't generate really awful equipment
             }
         }
 
@@ -204,8 +204,8 @@ namespace Controller
         {
             foreach (IParticipant participant in Participants.Where(p => p.Equipment.IsBroken))
             {
-                // chance is 2% of being fixed.
-                if (_random.NextDouble() < 0.02)
+                // chance is 6% of being fixed.
+                if (_random.NextDouble() < 0.06)
                 {
                     participant.Equipment.IsBroken = false;
                     // downgrade quality of equipment by 1, assure proper bounds
