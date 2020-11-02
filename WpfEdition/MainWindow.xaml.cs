@@ -76,7 +76,7 @@ namespace WpfEdition
             _currentRaceStatistics = new CurrentRaceStatistics();
 
             // link next race event
-            Data.NextRaceEvent += ((RaceStatisticsDataContext) _currentRaceStatistics.DataContext).OnNextRace;
+            Data.NextRaceEvent += ((RaceStatisticsDataContext)_currentRaceStatistics.DataContext).OnNextRace;
 
             // send current race to data context to show data mid race
             ((RaceStatisticsDataContext)_currentRaceStatistics.DataContext).OnNextRace(null, new NextRaceEventArgs(){Race = Data.CurrentRace});
@@ -89,6 +89,12 @@ namespace WpfEdition
         {
             // initialize window
             _competitionStatistics = new CompetitionStatistics();
+
+            // link next race event
+            Data.NextRaceEvent += ((CompetitionStatisticsDataContext)_competitionStatistics.DataContext).OnNextRace;
+
+            // send current race to data context to show data mid race
+            ((CompetitionStatisticsDataContext)_competitionStatistics.DataContext).OnNextRace(null, new NextRaceEventArgs(){Race = Data.CurrentRace});
 
             // show window
             _competitionStatistics.Show();

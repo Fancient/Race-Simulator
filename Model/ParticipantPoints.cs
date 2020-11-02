@@ -36,5 +36,10 @@ namespace Model
 
             return bestParticipant.Name;
         }
+
+        public override string ToString()
+        {
+            return $"{Name}: {Points}";
+        }
     }
 }

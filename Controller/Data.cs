@@ -126,9 +126,9 @@ namespace Controller
                 NextRaceEvent?.Invoke(null, new NextRaceEventArgs() { Race = CurrentRace });
                 CurrentRace.Start();
             }
-            else if (!_lastRaceFinished)
+            else if (!_lastRaceFinished) // On the last race, call NextRaceEvent one more time to update all data contexts.
             {
-                NextRaceEvent?.Invoke(null, new NextRaceEventArgs() { Race = CurrentRace }); // call next race event at the end
+                NextRaceEvent?.Invoke(null, new NextRaceEventArgs() { Race = CurrentRace });
                 _lastRaceFinished = true;
             }
         }
