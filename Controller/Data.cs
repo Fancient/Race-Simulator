@@ -6,10 +6,11 @@ namespace Controller
     public static class Data
     {
         public static Competition Competition { get; set; }
-
         public static Race CurrentRace { get; set; }
 
         public static event EventHandler<NextRaceEventArgs> NextRaceEvent;
+
+        private static bool _lastRaceFinished = false;
 
         public static void Initialize()
         {
@@ -124,6 +125,11 @@ namespace Controller
                 CurrentRace.RaceFinished += OnRaceFinished;
                 NextRaceEvent?.Invoke(null, new NextRaceEventArgs() { Race = CurrentRace });
                 CurrentRace.Start();
+            }
+            else if (!_lastRaceFinished)
+            {
+                NextRaceEvent?.Invoke(null, new NextRaceEventArgs() { Race = CurrentRace }); // call next race event at the end
+                _lastRaceFinished = true;
             }
         }
 
