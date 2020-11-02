@@ -1,6 +1,7 @@
 ﻿using Model;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Controller.Test
 {
@@ -19,7 +20,7 @@ namespace Controller.Test
         public void SetUp()
         {
             // setup track
-            track = new Track("Ovaal", new SectionTypes[]
+            track = new Track("Ovaal", new[]
             {
                 SectionTypes.StartGrid,
                 SectionTypes.StartGrid,
@@ -56,7 +57,7 @@ namespace Controller.Test
         [Test]
         public void Race_GetSectionData_ShouldReturnObject()
         {
-            Section section = track.Sections.First.Value;
+            Section section = track.Sections.First?.Value;
 
             var result = race.GetSectionData(section);
 
@@ -68,24 +69,21 @@ namespace Controller.Test
         [Test]
         public void Race_RandomizeEquipment()
         {
-            // we will check if equipment of a single participant has changed,
+            // we will check if equipment of a single participant is in bounds.
             // since all participants have the same equipment in setup
-
-            // get baseline equipment values
-            int originalQuality = equipment.Quality;
-            int originalPerformance = equipment.Performance;
+            // set values out of bounds first.
+            participants[0].Equipment.Quality = 32;
+            participants[0].Equipment.Performance = 32;
 
             race.RandomizeEquipment();
-
             var resultQuality = participants[0].Equipment.Quality;
             var resultPerformance = participants[0].Equipment.Performance;
 
-            // this Assert can be quite dangerous. the RandomizeEquipment() method creates random
-            // values and has a small possibility to generate the same numbers as the original equipment.
-            // meaning the unit test could fail for actually expected behaviour.
-            // TODO: Find a better way to test Race.RandomizeEquipment()
-            Assert.AreNotEqual(originalQuality, resultQuality);
-            Assert.AreNotEqual(originalPerformance, resultPerformance);
+            // Check if values are within bounds.
+            Assert.GreaterOrEqual(resultQuality, 8);
+            Assert.LessOrEqual(resultQuality, 20);
+            Assert.GreaterOrEqual(resultPerformance, 5);
+            Assert.LessOrEqual(resultPerformance, 15);
         }
 
         [Test]
@@ -97,18 +95,14 @@ namespace Controller.Test
         [Test]
         public void Race_GetStartGrids_ShouldReturnListContainingOnlyStartGrids()
         {
-            var result = race.GetStartGrids();
+            // Arrange
+            var startGrids = race.GetStartGrids();
 
-            // there must be a better way to do this
-            // TODO: Find a better way to assert
-            bool containingOtherSectionType = false;
-            foreach (Section section in result)
-            {
-                if (section.SectionType != SectionTypes.StartGrid)
-                    containingOtherSectionType = true;
-            }
+            // Act
+            var result = startGrids.Any(x => x.SectionType != SectionTypes.StartGrid);
 
-            Assert.IsFalse(containingOtherSectionType);
+            // Assert
+            Assert.IsFalse(result);
         }
 
         [Test]
@@ -136,7 +130,5 @@ namespace Controller.Test
             Assert.AreEqual(participants[0], p0);
             Assert.AreEqual(participants[1], p1);
         }
-
-        // TODO: Maybe add test to check what happens with more participants than available start grids
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Model
 {
@@ -17,10 +18,9 @@ namespace Model
         public string BestParticipant<T>(List<T> list) where T : class, IStorageConstraint
         {
             ParticipantLapTime bestTime = null;
-            foreach (T storageConstraint in list)
+            foreach (var currentTime in list.Select(storageConstraint => storageConstraint as ParticipantLapTime))
             {
-                var currentTime = storageConstraint as ParticipantLapTime;
-                if (bestTime == null) bestTime = currentTime; // first
+                bestTime ??= currentTime;
                 if (currentTime.Time < bestTime.Time)
                     bestTime = currentTime;
             }

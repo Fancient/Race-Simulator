@@ -27,15 +27,15 @@ namespace ConsoleEdition
 
         #region graphics
 
-        private static string[] _finishHorizontal = { "----", " 1# ", "2 # ", "----" };
-        private static string[] _startGridHorizontal = { "----", " 1] ", "2]  ", "----" };
+        private static readonly string[] FinishHorizontal = { "----", " 1# ", "2 # ", "----" };
+        private static readonly string[] StartGridHorizontal = { "----", " 1] ", "2]  ", "----" };
 
-        private static string[] _straightHorizontal = { "----", "  1 ", " 2  ", "----" };
-        private static string[] _straightVertical = { "|  |", "|2 |", "| 1|", "|  |" };
+        private static readonly string[] StraightHorizontal = { "----", "  1 ", " 2  ", "----" };
+        private static readonly string[] StraightVertical = { "|  |", "|2 |", "| 1|", "|  |" };
 
-        private static string[] _cornerNE = { " /--", "/1  ", "| 2 ", "|  /" };
+        private static readonly string[] CornerNe = { " /--", "/1  ", "| 2 ", "|  /" };
 
-        private static string[] _cornerNW =
+        private static readonly string[] CornerNw =
         {
             @"--\ ",
             @"  1\",
@@ -43,7 +43,7 @@ namespace ConsoleEdition
             @"\  |"
         };
 
-        private static string[] _cornerSE =
+        private static readonly string[] CornerSe =
         {
             @"|  \",
             @"| 1 ",
@@ -51,7 +51,7 @@ namespace ConsoleEdition
             @" \--"
         };
 
-        private static string[] _cornerSW =
+        private static readonly string[] CornerSw =
         {
             "/  |",
             " 1 |",
@@ -61,34 +61,34 @@ namespace ConsoleEdition
 
         #endregion graphics
 
-        public static string[] SectionTypeToGraphic(SectionTypes sectionType, Direction direction)
+        private static string[] SectionTypeToGraphic(SectionTypes sectionType, Direction direction)
         {
             return sectionType switch
             {
                 SectionTypes.Straight => ((int)direction % 2) switch
                 {
-                    0 => _straightVertical,
-                    1 => _straightHorizontal,
+                    0 => StraightVertical,
+                    1 => StraightHorizontal,
                     _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
                 },
                 SectionTypes.LeftCorner => (int)direction switch
                 {
-                    0 => _cornerNW,
-                    1 => _cornerSW,
-                    2 => _cornerSE,
-                    3 => _cornerNE,
+                    0 => CornerNw,
+                    1 => CornerSw,
+                    2 => CornerSe,
+                    3 => CornerNe,
                     _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
                 },
                 SectionTypes.RightCorner => (int)direction switch
                 {
-                    0 => _cornerNE,
-                    1 => _cornerNW,
-                    2 => _cornerSW,
-                    3 => _cornerSE,
+                    0 => CornerNe,
+                    1 => CornerNw,
+                    2 => CornerSw,
+                    3 => CornerSe,
                     _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
                 },
-                SectionTypes.StartGrid => _startGridHorizontal,
-                SectionTypes.Finish => _finishHorizontal,
+                SectionTypes.StartGrid => StartGridHorizontal,
+                SectionTypes.Finish => FinishHorizontal,
                 _ => throw new ArgumentOutOfRangeException(nameof(sectionType), sectionType, null)
             };
         }
@@ -112,7 +112,7 @@ namespace ConsoleEdition
             PrepareConsole();
         }
 
-        public static void PrepareConsole()
+        private static void PrepareConsole()
         {
             Console.Clear();
             Console.SetCursorPosition(0, 0);
@@ -137,7 +137,7 @@ namespace ConsoleEdition
             }
         }
 
-        public static void DrawSingleSection(Section section)
+        private static void DrawSingleSection(Section section)
         {
             // first determine section string
             string[] sectionStrings = ReplacePlaceHolders(
@@ -164,33 +164,17 @@ namespace ConsoleEdition
             ChangeCursorToNextPosition();
         }
 
-        // TODO: Change direction method with clever % method
-        public static Direction ChangeDirectionLeft(Direction d)
+        private static Direction ChangeDirectionLeft(Direction d)
         {
-            return d switch
-            {
-                Direction.N => Direction.W,
-                Direction.E => Direction.N,
-                Direction.S => Direction.E,
-                Direction.W => Direction.S,
-                _ => throw new ArgumentOutOfRangeException(nameof(d), d, null)
-            };
+            return (Direction)(((uint)d - 1) % 4);
         }
 
-        public static Direction ChangeDirectionRight(Direction d)
+        private static Direction ChangeDirectionRight(Direction d)
         {
-            return d switch
-            {
-                Direction.N => Direction.E,
-                Direction.E => Direction.S,
-                Direction.S => Direction.W,
-                Direction.W => Direction.N,
-                _ => throw new ArgumentOutOfRangeException(nameof(d), d, null)
-            };
+            return (Direction)(((uint)d + 1) % 4);
         }
 
-        // todo: make reference
-        public static void ChangeCursorToNextPosition()
+        private static void ChangeCursorToNextPosition()
         {
             switch (_currentDirection)
             {
@@ -212,7 +196,7 @@ namespace ConsoleEdition
             }
         }
 
-        public static string[] ReplacePlaceHolders(string[] inputStrings, IParticipant leftParticipant, IParticipant rightParticipant)
+        private static string[] ReplacePlaceHolders(string[] inputStrings, IParticipant leftParticipant, IParticipant rightParticipant)
         {
             // create returnStrings array
             string[] returnStrings = new string[inputStrings.Length];
@@ -231,7 +215,7 @@ namespace ConsoleEdition
         }
 
         // event handler OnDriversChanged, this is called when drivers change position on Track.
-        public static void OnDriversChanged(object sender, DriversChangedEventArgs e)
+        private static void OnDriversChanged(object sender, DriversChangedEventArgs e)
         {
             DrawTrack(e.Track);
         }
@@ -246,7 +230,6 @@ namespace ConsoleEdition
 
         private static void PrintParticipants()
         {
-            // TODO: Remove debugging method
             Console.SetCursorPosition(0, 1);
             foreach (IParticipant participant in _currentRace.Participants)
             {

@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Controller;
+﻿using Controller;
 using Model;
+using System;
+using System.Windows;
 using DispatcherPriority = System.Windows.Threading.DispatcherPriority;
 
 namespace WpfEdition
@@ -49,7 +36,7 @@ namespace WpfEdition
             // Dispatcher is needed for execution of OnDriversChanged. Otherwise thread exceptions will occur.
             this.Dispatcher.Invoke(() =>
             {
-                e.Race.DriversChanged += ((MainDataContext) this.DataContext).OnDriversChanged;
+                e.Race.DriversChanged += ((MainDataContext)this.DataContext).OnDriversChanged;
             });
         }
 
@@ -61,7 +48,6 @@ namespace WpfEdition
                 {
                     this.TrackScreen.Source = null;
                     this.TrackScreen.Source = Visualization.DrawTrack(e.Track);
-                    Trace.WriteLine($"Track ({e.Track.Name}) drawn");
                 }));
         }
 
@@ -79,7 +65,7 @@ namespace WpfEdition
             Data.NextRaceEvent += ((RaceStatisticsDataContext)_currentRaceStatistics.DataContext).OnNextRace;
 
             // send current race to data context to show data mid race
-            ((RaceStatisticsDataContext)_currentRaceStatistics.DataContext).OnNextRace(null, new NextRaceEventArgs(){Race = Data.CurrentRace});
+            ((RaceStatisticsDataContext)_currentRaceStatistics.DataContext).OnNextRace(null, new NextRaceEventArgs() { Race = Data.CurrentRace });
 
             // show window
             _currentRaceStatistics.Show();
@@ -94,7 +80,7 @@ namespace WpfEdition
             Data.NextRaceEvent += ((CompetitionStatisticsDataContext)_competitionStatistics.DataContext).OnNextRace;
 
             // send current race to data context to show data mid race
-            ((CompetitionStatisticsDataContext)_competitionStatistics.DataContext).OnNextRace(null, new NextRaceEventArgs(){Race = Data.CurrentRace});
+            ((CompetitionStatisticsDataContext)_competitionStatistics.DataContext).OnNextRace(null, new NextRaceEventArgs() { Race = Data.CurrentRace });
 
             // show window
             _competitionStatistics.Show();

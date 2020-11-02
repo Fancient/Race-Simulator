@@ -5,21 +5,21 @@ namespace Controller
 {
     public static class Data
     {
-        public static Competition Competition { get; set; }
-        public static Race CurrentRace { get; set; }
+        public static Competition Competition { get; private set; }
+        public static Race CurrentRace { get; private set; }
 
         public static event EventHandler<NextRaceEventArgs> NextRaceEvent;
 
-        private static bool _lastRaceFinished = false;
+        private static bool _lastRaceFinished;
 
         public static void Initialize()
         {
             Competition = new Competition();
-            addParticipants();
-            addTracks();
+            AddParticipants();
+            AddTracks();
         }
 
-        public static void addParticipants()
+        private static void AddParticipants()
         {
             Competition.Participants.Add(new Driver("Jaap", 0, new Car(8, 10, 16, false), TeamColors.Red));
             Competition.Participants.Add(new Driver("Sjaak", 0, new Car(12, 10, 20, false), TeamColors.Green));
@@ -29,9 +29,9 @@ namespace Controller
             Competition.Participants.Add(new Driver("Elsa", 0, new Car(16, 10, 30, false), TeamColors.Pink));
         }
 
-        public static void addTracks()
+        private static void AddTracks()
         {
-            Competition.Tracks.Enqueue(new Track("Rivendell", new SectionTypes[]
+            Competition.Tracks.Enqueue(new Track("Rivendell", new[]
             {
                 SectionTypes.StartGrid,
                 SectionTypes.StartGrid,
@@ -59,7 +59,7 @@ namespace Controller
                 SectionTypes.RightCorner
             }));
 
-            Competition.Tracks.Enqueue(new Track("El Norte", new SectionTypes[]
+            Competition.Tracks.Enqueue(new Track("El Norte", new[]
             {
                 SectionTypes.StartGrid,
                 SectionTypes.StartGrid,
@@ -91,7 +91,7 @@ namespace Controller
                 SectionTypes.Straight
             }));
 
-            Competition.Tracks.Enqueue(new Track("The Oval", new SectionTypes[]
+            Competition.Tracks.Enqueue(new Track("The Oval", new[]
             {
                 SectionTypes.StartGrid,
                 SectionTypes.StartGrid,
@@ -133,7 +133,7 @@ namespace Controller
             }
         }
 
-        public static void OnRaceFinished(object sender, EventArgs e)
+        private static void OnRaceFinished(object sender, EventArgs e)
         {
             Competition.DeterminePoints(CurrentRace.GetFinishOrderParticipants());
             Competition.StoreRaceLength(CurrentRace.Track.Name, CurrentRace.GetRaceLength());

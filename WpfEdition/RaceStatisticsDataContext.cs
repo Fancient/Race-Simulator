@@ -1,12 +1,8 @@
-﻿using System;
+﻿using Controller;
+using Model;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Controller;
-using Model;
 
 namespace WpfEdition
 {
@@ -37,7 +33,7 @@ namespace WpfEdition
             e.Race.DriversChanged += OnDriversChanged;
         }
 
-        public void OnDriversChanged(object sender, DriversChangedEventArgs e)
+        private void OnDriversChanged(object sender, DriversChangedEventArgs e)
         {
             LapTimes = _lapTimeStorage.GetList().ToList();
             SectionTimes = _sectionTimeStorage.GetList().ToList();
@@ -46,7 +42,6 @@ namespace WpfEdition
             Participants = CurrentRace.Participants.ToList();
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-            Trace.WriteLine(_sectionTimeStorage.BestParticipant());
         }
     }
 }
