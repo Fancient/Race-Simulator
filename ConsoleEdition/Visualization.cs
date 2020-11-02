@@ -93,7 +93,7 @@ namespace ConsoleEdition
             };
         }
 
-        public static void OnNextRaceEvent(object sender, RaceStartEventArgs e)
+        public static void OnNextRaceEvent(object sender, NextRaceEventArgs e)
         {
             // reinitialize
             Initialize(e.Race);

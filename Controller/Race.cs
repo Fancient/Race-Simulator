@@ -24,10 +24,10 @@ namespace Controller
         private Random _random;
         private Dictionary<Section, SectionData> _positions;
         private Timer _timer;
-        private const int timerInterval = 200;
+        private const int TimerInterval = 200;
 
         // keeping track of laps
-        private const int Laps = 4;
+        private const int Laps = 2;
 
         private Dictionary<IParticipant, int> _lapsDriven;
         private SectionData finishSectionData;
@@ -36,12 +36,11 @@ namespace Controller
         private List<IParticipant> _finishOrder;
 
         // section times
-        private Storage<ParticipantSectionTime> _participantSectionTimeStorage;
+        public Storage<ParticipantSectionTime> ParticipantSectionTimeStorage { get; }
 
         // lap times
         private Dictionary<IParticipant, DateTime> _participantTimeEachLap;
-
-        private Storage<ParticipantLapTime> _lapTimeStorage;
+        public Storage<ParticipantLapTime> LapTimeStorage { get; }
 
         // Race Length
         private DateTime EndTime;
@@ -67,10 +66,10 @@ namespace Controller
             _random = new Random(DateTime.Now.Millisecond);
             _positions = new Dictionary<Section, SectionData>();
             _finishOrder = new List<IParticipant>();
-            _participantSectionTimeStorage = new Storage<ParticipantSectionTime>();
-            _lapTimeStorage = new Storage<ParticipantLapTime>();
+            ParticipantSectionTimeStorage = new Storage<ParticipantSectionTime>();
+            LapTimeStorage = new Storage<ParticipantLapTime>();
 
-            _timer = new Timer(timerInterval);
+            _timer = new Timer(TimerInterval);
             _timer.Elapsed += OnTimedEvent;
 
             PlaceParticipantsOnStartGrid();
@@ -109,7 +108,7 @@ namespace Controller
             foreach (IParticipant participant in Participants)
             {
                 participant.Equipment.Performance = _random.Next(5, 16); //  5 <= performance <= 15
-                participant.Equipment.Quality = _random.Next(5, 21); // quality can be 1-20, but i don't generate really awful equipment
+                participant.Equipment.Quality = _random.Next(8, 21); // quality can be 1-20, but i don't generate really awful equipment
             }
         }
 
@@ -205,8 +204,8 @@ namespace Controller
         {
             foreach (IParticipant participant in Participants.Where(p => p.Equipment.IsBroken))
             {
-                // chance is 2% of being fixed.
-                if (_random.NextDouble() < 0.02)
+                // chance is 6% of being fixed.
+                if (_random.NextDouble() < 0.06)
                 {
                     participant.Equipment.IsBroken = false;
                     // downgrade quality of equipment by 1, assure proper bounds
@@ -374,7 +373,7 @@ namespace Controller
                             break;
                     }
                     // section time
-                    _participantSectionTimeStorage.AddToList(new ParticipantSectionTime()
+                    ParticipantSectionTimeStorage.AddToList(new ParticipantSectionTime()
                     {
                         Name = currentSectionData.Right.Name,
                         Section = currentSection,
@@ -404,7 +403,7 @@ namespace Controller
                             break;
                     }
                     // section time
-                    _participantSectionTimeStorage.AddToList(new ParticipantSectionTime()
+                    ParticipantSectionTimeStorage.AddToList(new ParticipantSectionTime()
                     {
                         Name = currentSectionData.Left.Name,
                         Section = currentSection,
@@ -448,7 +447,7 @@ namespace Controller
             // write lap time, update time
             if (_lapsDriven[participant] > 0) // ignore lap count from -1 to 0
             {
-                _lapTimeStorage.AddToList(new ParticipantLapTime()
+                LapTimeStorage.AddToList(new ParticipantLapTime()
                 {
                     Name = participant.Name,
                     Lap = _lapsDriven[participant],
@@ -522,12 +521,12 @@ namespace Controller
 
         public string GetBestParticipantSectionTime()
         {
-            return _participantSectionTimeStorage.BestParticipant();
+            return ParticipantSectionTimeStorage.BestParticipant();
         }
 
         public string GetBestParticipantLapTime()
         {
-            return _lapTimeStorage.BestParticipant();
+            return LapTimeStorage.BestParticipant();
         }
 
         public void Start()

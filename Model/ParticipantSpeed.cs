@@ -29,5 +29,10 @@ namespace Model
 
             return highestSpeed.Name;
         }
+
+        public override string ToString()
+        {
+            return $"{Name}, {Speed} on {TrackName}";
+        }
     }
 }

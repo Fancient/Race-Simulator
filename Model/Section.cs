@@ -8,5 +8,10 @@
         {
             SectionType = sectionType;
         }
+
+        public override string ToString()
+        {
+            return SectionType.ToString();
+        }
     }
 }

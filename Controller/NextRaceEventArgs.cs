@@ -2,7 +2,7 @@
 
 namespace Controller
 {
-    public class RaceStartEventArgs : EventArgs
+    public class NextRaceEventArgs : EventArgs
     {
         public Race Race { get; set; }
     }
