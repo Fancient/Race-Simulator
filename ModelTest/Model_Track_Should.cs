@@ -13,7 +13,7 @@ namespace Model.Test
         [SetUp]
         public void SetUp()
         {
-            _sections = new SectionTypes[] { SectionTypes.Finish, SectionTypes.LeftCorner, SectionTypes.RightCorner };
+            _sections = new[] { SectionTypes.Finish, SectionTypes.LeftCorner, SectionTypes.RightCorner };
         }
 
         [Test]

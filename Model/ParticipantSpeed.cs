@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Model
 {
@@ -17,10 +18,9 @@ namespace Model
         {
             ParticipantSpeed highestSpeed = null;
 
-            foreach (var storageConstraint in list)
+            foreach (var currentParticipantSpeed in list.Select(storageConstraint => storageConstraint as ParticipantSpeed))
             {
-                var currentParticipantSpeed = storageConstraint as ParticipantSpeed;
-                if (highestSpeed == null) highestSpeed = currentParticipantSpeed; // set first
+                highestSpeed ??= currentParticipantSpeed;
                 if (currentParticipantSpeed.Speed > highestSpeed.Speed)
                 {
                     highestSpeed = currentParticipantSpeed;

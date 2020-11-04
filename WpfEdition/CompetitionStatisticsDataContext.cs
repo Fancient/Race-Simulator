@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Controller;
+using Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Controller;
-using Model;
 
 namespace WpfEdition
 {
@@ -35,7 +32,7 @@ namespace WpfEdition
             OnPropertyChanged();
         }
 
-        protected virtual void OnPropertyChanged()
+        private void OnPropertyChanged()
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }

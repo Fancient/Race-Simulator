@@ -7,10 +7,10 @@ namespace Model
     {
         public List<IParticipant> Participants { get; set; }
         public Queue<Track> Tracks { get; set; }
-        public Storage<ParticipantPoints> PointsStorage { get; set; }
-        public Storage<ParticipantSpeed> SpeedStorage { get; set; }
+        public Storage<ParticipantPoints> PointsStorage { get; }
+        public Storage<ParticipantSpeed> SpeedStorage { get; }
 
-        public List<RaceLength> RaceLengthStorage { get; set; }
+        public List<RaceLength> RaceLengthStorage { get; }
 
         public Competition()
         {

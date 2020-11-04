@@ -7,36 +7,36 @@
         mc:Ignorable="d"
         Title="CompetitionStatistics" Height="1000" Width="500">
     <Window.DataContext>
-        <local:CompetitionStatisticsDataContext/>
+        <local:CompetitionStatisticsDataContext />
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="6*"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="2*" />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Grid.Column="0" FontWeight="Bold" FontSize="16">Highest Score:</Label>
-            <Label Grid.Row="0" Grid.Column="1" FontSize="16" Content="{Binding BestParticipantPoints}"/>
+            <Label Grid.Row="0" Grid.Column="1" FontSize="16" Content="{Binding BestParticipantPoints}" />
             <Label Grid.Row="1" Grid.Column="0" FontWeight="Bold" FontSize="16">Highest Speed:</Label>
-            <Label Grid.Row="1" Grid.Column="1" FontSize="16" Content="{Binding BestParticipantSpeed}"/>
+            <Label Grid.Row="1" Grid.Column="1" FontSize="16" Content="{Binding BestParticipantSpeed}" />
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Label>Points:</Label>
-            <ListView Grid.Row="1" Name="PointsView" ItemsSource="{Binding ParticipantPoints}">
+            <ListView Grid.Row="1" ItemsSource="{Binding ParticipantPoints}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
@@ -47,11 +47,11 @@
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Label>Speeds:</Label>
-            <ListView Grid.Row="1" Name="SpeedsView" ItemsSource="{Binding ParticipantSpeeds}">
+            <ListView Grid.Row="1" ItemsSource="{Binding ParticipantSpeeds}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
@@ -63,11 +63,11 @@
         </Grid>
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Label>RaceLengths:</Label>
-            <ListView Grid.Row="1" Name="LengthView" ItemsSource="{Binding RaceLengths}">
+            <ListView Grid.Row="1" ItemsSource="{Binding RaceLengths}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="TrackName" DisplayMemberBinding="{Binding TrackName}"></GridViewColumn>

@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
+
+[assembly: InternalsVisibleTo("WpfEdition.Test")]
 
 namespace WpfEdition
 {
     public static class ImageCache
     {
-        private static Dictionary<string, Bitmap> _bitmapCache;
+        internal static Dictionary<string, Bitmap> BitmapCache;
 
         public static void Initialize()
         {
-            _bitmapCache = new Dictionary<string, Bitmap>();
+            BitmapCache = new Dictionary<string, Bitmap>();
         }
 
         /// <summary>
@@ -25,9 +28,9 @@ namespace WpfEdition
         /// <returns>bitmap</returns>
         public static Bitmap GetBitmap(string filename)
         {
-            if (!_bitmapCache.ContainsKey(filename))
-                _bitmapCache.Add(filename, new Bitmap(filename));
-            return _bitmapCache[filename];
+            if (!BitmapCache.ContainsKey(filename))
+                BitmapCache.Add(filename, new Bitmap(filename));
+            return BitmapCache[filename];
         }
 
         /// <summary>
@@ -35,7 +38,7 @@ namespace WpfEdition
         /// </summary>
         public static void ClearCache()
         {
-            _bitmapCache.Clear();
+            BitmapCache.Clear();
         }
 
         /// <summary>
@@ -49,14 +52,14 @@ namespace WpfEdition
         {
             // key: "empty"
             string key = "empty";
-            if (!_bitmapCache.ContainsKey(key))
+            if (!BitmapCache.ContainsKey(key))
             {
-                _bitmapCache.Add(key, new Bitmap(width, height));
+                BitmapCache.Add(key, new Bitmap(width, height));
                 // teken een achtergrond op de bitmap
-                Graphics g = Graphics.FromImage(_bitmapCache[key]);
+                Graphics g = Graphics.FromImage(BitmapCache[key]);
                 g.Clear(Color.DarkGreen); // Background color
             }
-            return (Bitmap)_bitmapCache[key].Clone();
+            return (Bitmap)BitmapCache[key].Clone();
         }
 
         /// <summary>

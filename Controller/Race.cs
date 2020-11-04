@@ -18,32 +18,32 @@ namespace Controller
     public class Race
     {
         public Track Track { get; set; }
-        public List<IParticipant> Participants { get; set; }
+        public List<IParticipant> Participants { get; }
         public DateTime StartTime { get; set; }
 
-        private Random _random;
-        private Dictionary<Section, SectionData> _positions;
-        private Timer _timer;
+        private readonly Random _random;
+        internal readonly Dictionary<Section, SectionData> Positions;
+        private readonly Timer _timer;
         private const int TimerInterval = 200;
 
         // keeping track of laps
-        private const int Laps = 2;
+        internal const int Laps = 3;
 
         private Dictionary<IParticipant, int> _lapsDriven;
-        private SectionData finishSectionData;
 
         // list for finish order
-        private List<IParticipant> _finishOrder;
+        private readonly List<IParticipant> _finishOrder;
 
         // section times
         public Storage<ParticipantSectionTime> ParticipantSectionTimeStorage { get; }
 
         // lap times
         private Dictionary<IParticipant, DateTime> _participantTimeEachLap;
+
         public Storage<ParticipantLapTime> LapTimeStorage { get; }
 
         // Race Length
-        private DateTime EndTime;
+        private DateTime _endTime;
 
         // event for drivers changed positions
         public event EventHandler<DriversChangedEventArgs> DriversChanged;
@@ -55,8 +55,8 @@ namespace Controller
         {
             // look for key section in dictionary, if exists, return sectiondata for key section.
             // otherwise, create SectionData for section and return that object.
-            if (!_positions.ContainsKey(section)) _positions.Add(section, new SectionData());
-            return _positions[section];
+            if (!Positions.ContainsKey(section)) Positions.Add(section, new SectionData());
+            return Positions[section];
         }
 
         public Race(Track track, List<IParticipant> participants)
@@ -64,7 +64,7 @@ namespace Controller
             Track = track;
             Participants = participants;
             _random = new Random(DateTime.Now.Millisecond);
-            _positions = new Dictionary<Section, SectionData>();
+            Positions = new Dictionary<Section, SectionData>();
             _finishOrder = new List<IParticipant>();
             ParticipantSectionTimeStorage = new Storage<ParticipantSectionTime>();
             LapTimeStorage = new Storage<ParticipantLapTime>();
@@ -74,14 +74,7 @@ namespace Controller
 
             PlaceParticipantsOnStartGrid();
             InitializeParticipantLaps();
-            InitializeFinishSectionData();
             RandomizeEquipment();
-        }
-
-        private void InitializeFinishSectionData()
-        {
-            // find finish section from track (there's only one finish)
-            finishSectionData = GetSectionData(Track.Sections.First(a => a.SectionType == SectionTypes.Finish));
         }
 
         private void InitializeParticipantLaps()
@@ -94,7 +87,7 @@ namespace Controller
             }
         }
 
-        private void InitializeParticipantTimeEachLap()
+        internal void InitializeParticipantTimeEachLap()
         {
             _participantTimeEachLap = new Dictionary<IParticipant, DateTime>();
             foreach (IParticipant participant in Participants)
@@ -140,14 +133,8 @@ namespace Controller
 
         public List<Section> GetStartGrids()
         {
-            List<Section> startGridSections = new List<Section>();
-
             // put all sections in list that have sectiontype StartGrid
-            foreach (Section trackSection in Track.Sections)
-            {
-                if (trackSection.SectionType == SectionTypes.StartGrid)
-                    startGridSections.Add(trackSection);
-            }
+            List<Section> startGridSections = Track.Sections.Where(trackSection => trackSection.SectionType == SectionTypes.StartGrid).ToList();
 
             // reverse list
             startGridSections.Reverse();
@@ -163,9 +150,8 @@ namespace Controller
                 GetSectionData(section).Left = p;
         }
 
-        public void OnTimedEvent(object sender, ElapsedEventArgs e)
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
-            // TODO: Change values and bounds for Quality and Speed (speed x2 or x3, quality x2)
             // fix broken drivers at random
             RandomizeEquipmentFixing();
             // randomize IsBroken for pariticpants
@@ -180,7 +166,7 @@ namespace Controller
             // check if any participants on track, if not, race is finished.
             if (CheckRaceFinished())
             {
-                EndTime = e.SignalTime;
+                _endTime = e.SignalTime;
                 RaceFinished?.Invoke(this, new EventArgs());
             }
         }
@@ -189,7 +175,7 @@ namespace Controller
         {
             // quality of a participant is 1 to 10; meaning a 0.1 to 0.01% chance of breaking.
             List<IParticipant> participantsOnTrack =
-                _positions.Values.Where(a => a.Left != null).Select(a => a.Left).Concat(_positions.Values.Where(a => a.Right != null).Select(a => a.Right)).ToList();
+                Positions.Values.Where(a => a.Left != null).Select(a => a.Left).Concat(Positions.Values.Where(a => a.Right != null).Select(a => a.Right)).ToList();
             foreach (IParticipant participant in participantsOnTrack)
             {
                 double qualityChance = (11 - (participant.Equipment.Quality * 0.5)) * 0.0005;
@@ -227,7 +213,7 @@ namespace Controller
             while (currentSectionNode != null)
             {
                 // get sectiondata variables for currentSectionData and nextSectionData section
-                MoveParticipantsSectionData(currentSectionNode.Value, currentSectionNode.Next != null ? currentSectionNode.Next.Value : Track.Sections.First.Value, elapsedDateTime);
+                MoveParticipantsSectionData(currentSectionNode.Value, currentSectionNode.Next != null ? currentSectionNode.Next.Value : Track.Sections.First?.Value, elapsedDateTime);
 
                 // loop iterator
                 currentSectionNode = currentSectionNode.Previous;
@@ -250,7 +236,6 @@ namespace Controller
                 currentSectionData.DistanceRight += GetSpeedFromParticipant(currentSectionData.Right);
             }
 
-            // TODO: maak methodes voor verplaatsen: leftToLeft, leftToRight, rightToRight, rightToRight. parameters: 2 sectiondata, bool correctOtherDriver.
             if (currentSectionData.DistanceLeft >= 100 && currentSectionData.DistanceRight >= 100)
             {
                 #region Both drivers ready to move
@@ -327,24 +312,21 @@ namespace Controller
             }
         }
 
-        public int GetSpeedFromParticipant(IParticipant iParticipant)
-        {
-            return Convert.ToInt32(Math.Ceiling(0.1 * (iParticipant.Equipment.Speed * 0.5) * iParticipant.Equipment.Performance + 18));
-        }
+        public int GetSpeedFromParticipant(IParticipant iParticipant) => Convert.ToInt32(Math.Ceiling(0.1 * (iParticipant.Equipment.Speed * 0.5) * iParticipant.Equipment.Performance + 18));
 
-        private int FreePlacesLeftOnSectionData(SectionData sd)
+        internal int FreePlacesLeftOnSectionData(SectionData sd)
         {
             // values possible:
             // 0: no places possible
             // 1: left free
             // 2: right free
             // 3: both free
-            int returnval = 0;
+            int returnValue = 0;
             if (sd.Left == null)
-                returnval += 1;
+                returnValue += 1;
             if (sd.Right == null)
-                returnval += 2;
-            return returnval;
+                returnValue += 2;
+            return returnValue;
         }
 
         private void MoveSingleParticipant(Section currentSection, Section nextSection, Side start, Side end, bool correctOtherSide, DateTime elapsedDateTime)
@@ -360,16 +342,16 @@ namespace Controller
                             nextSectionData.Right = currentSectionData.Right;
                             nextSectionData.StartTimeRight = elapsedDateTime;
                             nextSectionData.DistanceRight = currentSectionData.DistanceRight - 100;
-                            if (isFinishSection(nextSection))
-                                OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Right, elapsedDateTime);
+                            if (IsFinishSection(nextSection))
+                                OnMoveUpdateLapsAndFinish(nextSectionData, Side.Right, elapsedDateTime);
                             break;
 
                         case Side.Left:
                             nextSectionData.Left = currentSectionData.Right;
                             nextSectionData.StartTimeLeft = elapsedDateTime;
                             nextSectionData.DistanceLeft = currentSectionData.DistanceRight - 100;
-                            if (isFinishSection(nextSection))
-                                OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Left, elapsedDateTime);
+                            if (IsFinishSection(nextSection))
+                                OnMoveUpdateLapsAndFinish(nextSectionData, Side.Left, elapsedDateTime);
                             break;
                     }
                     // section time
@@ -390,16 +372,16 @@ namespace Controller
                             nextSectionData.Right = currentSectionData.Left;
                             nextSectionData.StartTimeRight = elapsedDateTime;
                             nextSectionData.DistanceRight = currentSectionData.DistanceLeft - 100;
-                            if (isFinishSection(nextSection))
-                                OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Right, elapsedDateTime);
+                            if (IsFinishSection(nextSection))
+                                OnMoveUpdateLapsAndFinish(nextSectionData, Side.Right, elapsedDateTime);
                             break;
 
                         case Side.Left:
                             nextSectionData.Left = currentSectionData.Left;
                             nextSectionData.StartTimeLeft = elapsedDateTime;
                             nextSectionData.DistanceLeft = currentSectionData.DistanceLeft - 100;
-                            if (isFinishSection(nextSection))
-                                OnMoveUpdateLapsAndFinish(nextSection, nextSectionData, Side.Left, elapsedDateTime);
+                            if (IsFinishSection(nextSection))
+                                OnMoveUpdateLapsAndFinish(nextSectionData, Side.Left, elapsedDateTime);
                             break;
                     }
                     // section time
@@ -423,10 +405,8 @@ namespace Controller
 
         public int GetDistanceParticipant(IParticipant participant)
         {
-            // TODO: Remove debugging method
-            // debugging method
-            SectionData partL = _positions.Values.FirstOrDefault(part => part.Left == participant);
-            SectionData partR = _positions.Values.FirstOrDefault(part => part.Right == participant);
+            SectionData partL = Positions.Values.FirstOrDefault(part => part.Left == participant);
+            SectionData partR = Positions.Values.FirstOrDefault(part => part.Right == participant);
 
             if (partL != null)
                 return partL.DistanceLeft;
@@ -435,99 +415,58 @@ namespace Controller
             return 0;
         }
 
-        public int GetLapsParticipant(IParticipant participant)
-        {
-            // TODO: Remove debugging method
-            return _lapsDriven[participant];
-        }
+        public int GetLapsParticipant(IParticipant participant) => _lapsDriven[participant];
 
-        private void UpdateLap(IParticipant participant, DateTime elapsedDateTime)
+        internal void UpdateLap(IParticipant participant, DateTime elapsedDateTime)
         {
             _lapsDriven[participant]++;
             // write lap time, update time
-            if (_lapsDriven[participant] > 0) // ignore lap count from -1 to 0
+            if (_lapsDriven[participant] <= 0) return;
+            LapTimeStorage.AddToList(new ParticipantLapTime()
             {
-                LapTimeStorage.AddToList(new ParticipantLapTime()
-                {
-                    Name = participant.Name,
-                    Lap = _lapsDriven[participant],
-                    Time = elapsedDateTime - _participantTimeEachLap[participant]
-                });
-                _participantTimeEachLap[participant] = elapsedDateTime;
-            }
+                Name = participant.Name,
+                Lap = _lapsDriven[participant],
+                Time = elapsedDateTime - _participantTimeEachLap[participant]
+            });
+            _participantTimeEachLap[participant] = elapsedDateTime;
         }
 
-        private bool isFinished(IParticipant participant)
-        {
-            return _lapsDriven[participant] >= Laps;
-        }
+        internal bool IsFinished(IParticipant participant) => _lapsDriven[participant] >= Laps;
 
-        private bool isFinishSection(Section section)
+        internal bool IsFinishSection(Section section)
         {
             return section.SectionType == SectionTypes.Finish;
         }
 
-        private void OnMoveUpdateLapsAndFinish(Section section, SectionData sectionData, Side side, DateTime elapsedDateTime)
+        private void OnMoveUpdateLapsAndFinish(SectionData sectionData, Side side, DateTime elapsedDateTime)
         {
             if (side == Side.Right)
             {
                 UpdateLap(sectionData.Right, elapsedDateTime);
-                if (isFinished(sectionData.Right))
-                {
-                    _finishOrder.Add(sectionData.Right);
-                    sectionData.Right = null;
-                }
+                if (!IsFinished(sectionData.Right)) return;
+                _finishOrder.Add(sectionData.Right);
+                sectionData.Right = null;
             }
             else if (side == Side.Left)
             {
                 UpdateLap(sectionData.Left, elapsedDateTime);
-                if (isFinished(sectionData.Left))
-                {
-                    _finishOrder.Add(sectionData.Left);
-                    sectionData.Left = null;
-                }
+                if (!IsFinished(sectionData.Left)) return;
+                _finishOrder.Add(sectionData.Left);
+                sectionData.Left = null;
             }
         }
 
-        private bool CheckRaceFinished()
-        {
-            return _positions.Values.FirstOrDefault(a => a.Left != null || a.Right != null) == null;
-        }
+        internal bool CheckRaceFinished() => Positions.Values.FirstOrDefault(a => a.Left != null || a.Right != null) == null;
 
-        public List<IParticipant> GetFinishOrderParticipants()
-        {
-            return _finishOrder;
-        }
+        public List<IParticipant> GetFinishOrderParticipants() => _finishOrder;
 
-        public TimeSpan GetRaceLength()
-        {
-            return EndTime - StartTime;
-        }
+        public TimeSpan GetRaceLength() => _endTime - StartTime;
 
-        public List<ParticipantSpeed> GetParticipantSpeeds()
-        {
-            List<ParticipantSpeed> list = new List<ParticipantSpeed>();
-            foreach (IParticipant participant in Participants)
-            {
-                list.Add(new ParticipantSpeed()
-                {
-                    Name = participant.Name,
-                    TrackName = Track.Name,
-                    Speed = GetSpeedFromParticipant(participant)
-                });
-            }
-            return list;
-        }
+        public List<ParticipantSpeed> GetParticipantSpeeds() => Participants.Select(participant => new ParticipantSpeed() { Name = participant.Name, TrackName = Track.Name, Speed = GetSpeedFromParticipant(participant) }).ToList();
 
-        public string GetBestParticipantSectionTime()
-        {
-            return ParticipantSectionTimeStorage.BestParticipant();
-        }
+        public string GetBestParticipantSectionTime() => ParticipantSectionTimeStorage.BestParticipant();
 
-        public string GetBestParticipantLapTime()
-        {
-            return LapTimeStorage.BestParticipant();
-        }
+        public string GetBestParticipantLapTime() => LapTimeStorage.BestParticipant();
 
         public void Start()
         {
