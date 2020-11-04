@@ -1,6 +1,9 @@
 ﻿using Controller;
 using Model;
 using System;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("ConsoleEdition.Test")]
 
 namespace ConsoleEdition
 {
@@ -33,35 +36,14 @@ namespace ConsoleEdition
         private static readonly string[] StraightHorizontal = { "----", "  1 ", " 2  ", "----" };
         private static readonly string[] StraightVertical = { "|  |", "|2 |", "| 1|", "|  |" };
 
-        private static readonly string[] CornerNe = { " /--", "/1  ", "| 2 ", "|  /" };
-
-        private static readonly string[] CornerNw =
-        {
-            @"--\ ",
-            @"  1\",
-            @" 2 |",
-            @"\  |"
-        };
-
-        private static readonly string[] CornerSe =
-        {
-            @"|  \",
-            @"| 1 ",
-            @"\2  ",
-            @" \--"
-        };
-
-        private static readonly string[] CornerSw =
-        {
-            "/  |",
-            " 1 |",
-            "  2/",
-            "--/ "
-        };
+        private static readonly string[] CornerNe = { @" /--", @"/1  ", @"| 2 ", @"|  /" };
+        private static readonly string[] CornerNw = { @"--\ ", @"  1\", @" 2 |", @"\  |" };
+        private static readonly string[] CornerSe = { @"|  \", @"| 1 ", @"\2  ", @" \--" };
+        private static readonly string[] CornerSw = { @"/  |", @" 1 |", @"  2/", @"--/ " };
 
         #endregion graphics
 
-        private static string[] SectionTypeToGraphic(SectionTypes sectionType, Direction direction)
+        internal static string[] SectionTypeToGraphic(SectionTypes sectionType, Direction direction)
         {
             return sectionType switch
             {
@@ -164,12 +146,12 @@ namespace ConsoleEdition
             ChangeCursorToNextPosition();
         }
 
-        private static Direction ChangeDirectionLeft(Direction d)
+        internal static Direction ChangeDirectionLeft(Direction d)
         {
             return (Direction)(((uint)d - 1) % 4);
         }
 
-        private static Direction ChangeDirectionRight(Direction d)
+        internal static Direction ChangeDirectionRight(Direction d)
         {
             return (Direction)(((uint)d + 1) % 4);
         }
@@ -196,7 +178,7 @@ namespace ConsoleEdition
             }
         }
 
-        private static string[] ReplacePlaceHolders(string[] inputStrings, IParticipant leftParticipant, IParticipant rightParticipant)
+        internal static string[] ReplacePlaceHolders(string[] inputStrings, IParticipant leftParticipant, IParticipant rightParticipant)
         {
             // create returnStrings array
             string[] returnStrings = new string[inputStrings.Length];

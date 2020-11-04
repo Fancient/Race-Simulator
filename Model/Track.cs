@@ -19,6 +19,8 @@ namespace Model
         private LinkedList<Section> GenerateSections(SectionTypes[] sectionTypes)
         {
             LinkedList<Section> sections = new LinkedList<Section>();
+            if (sectionTypes == null)
+                return sections;
             foreach (SectionTypes sectionType in sectionTypes)
             {
                 sections.AddLast(new Section(sectionType));

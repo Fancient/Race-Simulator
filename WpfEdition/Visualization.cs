@@ -4,13 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
+
+[assembly: InternalsVisibleTo("WpfEdition.Test")]
 
 namespace WpfEdition
 {
     public static class Visualization
     {
-        internal enum Direction
+        public enum Direction
         {
             N,
             E,
@@ -18,7 +21,7 @@ namespace WpfEdition
             W
         }
 
-        internal enum Side
+        public enum Side
         {
             Left,
             Right
@@ -28,8 +31,8 @@ namespace WpfEdition
 
         #region SizeConstants
 
-        private const int SectionDimension = 256;
-        private const int DriverDimension = 64;
+        internal const int SectionDimension = 256;
+        internal const int DriverDimension = 64;
 
         #endregion SizeConstants
 
@@ -175,7 +178,7 @@ namespace WpfEdition
         /// <param name="side">side of driver (Left or Right)</param>
         /// <param name="currentDirection">current direction of driver</param>
         /// <returns>tuple of x and y</returns>
-        private static (int x, int y) GetParticipantOffset(Side side, Direction currentDirection)
+        internal static (int x, int y) GetParticipantOffset(Side side, Direction currentDirection)
         {
             return side switch
             {
@@ -211,7 +214,7 @@ namespace WpfEdition
         /// <param name="color">Teamcolor of participant</param>
         /// <param name="d">current direction</param>
         /// <returns>filename</returns>
-        private static string TeamColorToFilename(TeamColors color, Direction d)
+        internal static string TeamColorToFilename(TeamColors color, Direction d)
         {
             return d switch
             {
@@ -279,7 +282,7 @@ namespace WpfEdition
         /// <param name="xPos">reference to current value for X</param>
         /// <param name="yPos">reference to current value for Y</param>
         /// <param name="direction">current facing direction</param>
-        private static void MovePosition(ref int xPos, ref int yPos, Direction direction)
+        internal static void MovePosition(ref int xPos, ref int yPos, Direction direction)
         {
             switch (direction)
             {
@@ -307,7 +310,7 @@ namespace WpfEdition
         /// <param name="d">current direction</param>
         /// <param name="st">current section's type</param>
         /// <returns>new direction</returns>
-        private static Direction DetermineDirectionForSectionType(Direction d, SectionTypes st)
+        internal static Direction DetermineDirectionForSectionType(Direction d, SectionTypes st)
         {
             return st switch
             {
@@ -322,7 +325,7 @@ namespace WpfEdition
         /// </summary>
         /// <param name="track"></param>
         /// <returns>Width and Height in pixels, Tuple start position in pixels</returns>
-        private static (int width, int height, (int x, int y)) GetTrackSize(Track track)
+        internal static (int width, int height, (int x, int y)) GetTrackSize(Track track)
         {
             int startX = 10, startY = 10; // start at 10, 10. This way we can determine min and max positions
             int curX = startX, curY = startY;
@@ -414,7 +417,7 @@ namespace WpfEdition
         /// <param name="curX"></param>
         /// <param name="curY"></param>
         /// <param name="direction"></param>
-        private static void NextPosition(ref int curX, ref int curY, Direction direction)
+        internal static void NextPosition(ref int curX, ref int curY, Direction direction)
         {
             switch (direction)
             {

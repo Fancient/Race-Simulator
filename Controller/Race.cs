@@ -22,12 +22,12 @@ namespace Controller
         public DateTime StartTime { get; set; }
 
         private readonly Random _random;
-        private readonly Dictionary<Section, SectionData> _positions;
+        internal readonly Dictionary<Section, SectionData> Positions;
         private readonly Timer _timer;
         private const int TimerInterval = 200;
 
         // keeping track of laps
-        private const int Laps = 3;
+        internal const int Laps = 3;
 
         private Dictionary<IParticipant, int> _lapsDriven;
 
@@ -55,8 +55,8 @@ namespace Controller
         {
             // look for key section in dictionary, if exists, return sectiondata for key section.
             // otherwise, create SectionData for section and return that object.
-            if (!_positions.ContainsKey(section)) _positions.Add(section, new SectionData());
-            return _positions[section];
+            if (!Positions.ContainsKey(section)) Positions.Add(section, new SectionData());
+            return Positions[section];
         }
 
         public Race(Track track, List<IParticipant> participants)
@@ -64,7 +64,7 @@ namespace Controller
             Track = track;
             Participants = participants;
             _random = new Random(DateTime.Now.Millisecond);
-            _positions = new Dictionary<Section, SectionData>();
+            Positions = new Dictionary<Section, SectionData>();
             _finishOrder = new List<IParticipant>();
             ParticipantSectionTimeStorage = new Storage<ParticipantSectionTime>();
             LapTimeStorage = new Storage<ParticipantLapTime>();
@@ -87,7 +87,7 @@ namespace Controller
             }
         }
 
-        private void InitializeParticipantTimeEachLap()
+        internal void InitializeParticipantTimeEachLap()
         {
             _participantTimeEachLap = new Dictionary<IParticipant, DateTime>();
             foreach (IParticipant participant in Participants)
@@ -175,7 +175,7 @@ namespace Controller
         {
             // quality of a participant is 1 to 10; meaning a 0.1 to 0.01% chance of breaking.
             List<IParticipant> participantsOnTrack =
-                _positions.Values.Where(a => a.Left != null).Select(a => a.Left).Concat(_positions.Values.Where(a => a.Right != null).Select(a => a.Right)).ToList();
+                Positions.Values.Where(a => a.Left != null).Select(a => a.Left).Concat(Positions.Values.Where(a => a.Right != null).Select(a => a.Right)).ToList();
             foreach (IParticipant participant in participantsOnTrack)
             {
                 double qualityChance = (11 - (participant.Equipment.Quality * 0.5)) * 0.0005;
@@ -314,19 +314,19 @@ namespace Controller
 
         public int GetSpeedFromParticipant(IParticipant iParticipant) => Convert.ToInt32(Math.Ceiling(0.1 * (iParticipant.Equipment.Speed * 0.5) * iParticipant.Equipment.Performance + 18));
 
-        private int FreePlacesLeftOnSectionData(SectionData sd)
+        internal int FreePlacesLeftOnSectionData(SectionData sd)
         {
             // values possible:
             // 0: no places possible
             // 1: left free
             // 2: right free
             // 3: both free
-            int returnval = 0;
+            int returnValue = 0;
             if (sd.Left == null)
-                returnval += 1;
+                returnValue += 1;
             if (sd.Right == null)
-                returnval += 2;
-            return returnval;
+                returnValue += 2;
+            return returnValue;
         }
 
         private void MoveSingleParticipant(Section currentSection, Section nextSection, Side start, Side end, bool correctOtherSide, DateTime elapsedDateTime)
@@ -405,8 +405,8 @@ namespace Controller
 
         public int GetDistanceParticipant(IParticipant participant)
         {
-            SectionData partL = _positions.Values.FirstOrDefault(part => part.Left == participant);
-            SectionData partR = _positions.Values.FirstOrDefault(part => part.Right == participant);
+            SectionData partL = Positions.Values.FirstOrDefault(part => part.Left == participant);
+            SectionData partR = Positions.Values.FirstOrDefault(part => part.Right == participant);
 
             if (partL != null)
                 return partL.DistanceLeft;
@@ -417,7 +417,7 @@ namespace Controller
 
         public int GetLapsParticipant(IParticipant participant) => _lapsDriven[participant];
 
-        private void UpdateLap(IParticipant participant, DateTime elapsedDateTime)
+        internal void UpdateLap(IParticipant participant, DateTime elapsedDateTime)
         {
             _lapsDriven[participant]++;
             // write lap time, update time
@@ -431,9 +431,9 @@ namespace Controller
             _participantTimeEachLap[participant] = elapsedDateTime;
         }
 
-        private bool IsFinished(IParticipant participant) => _lapsDriven[participant] >= Laps;
+        internal bool IsFinished(IParticipant participant) => _lapsDriven[participant] >= Laps;
 
-        private bool IsFinishSection(Section section)
+        internal bool IsFinishSection(Section section)
         {
             return section.SectionType == SectionTypes.Finish;
         }
@@ -456,7 +456,7 @@ namespace Controller
             }
         }
 
-        private bool CheckRaceFinished() => _positions.Values.FirstOrDefault(a => a.Left != null || a.Right != null) == null;
+        internal bool CheckRaceFinished() => Positions.Values.FirstOrDefault(a => a.Left != null || a.Right != null) == null;
 
         public List<IParticipant> GetFinishOrderParticipants() => _finishOrder;
 

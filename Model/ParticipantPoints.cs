@@ -8,7 +8,7 @@ namespace Model
         public string Name { get; set; }
         public int Points { get; set; }
 
-        void IStorageConstraint.Add<T>(List<T> list)
+        public void Add<T>(List<T> list) where T : class, IStorageConstraint
         {
             foreach (var TParticipantPoints in list)
             {
